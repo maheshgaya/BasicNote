@@ -23,6 +23,9 @@
     <string name="frag_settings" translatable="false">frag_settings</string>
     <string name="frag_trash" translatable="false">frag_trash</string>
     <string name="frag_notes" translatable="false">frag_notes</string>
+    <string name="description_start_voice_search">Tap for Voice Search</string>
+    <string name="description_drawer_menu">Open side menu</string>
+    <string name="transition_search_toolbar">transition_search_toolbar</string>
 
 
 </resources>
