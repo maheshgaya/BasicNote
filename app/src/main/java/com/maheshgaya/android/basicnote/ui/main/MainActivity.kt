@@ -1,6 +1,7 @@
 package com.maheshgaya.android.basicnote.ui.main
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -23,8 +24,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mDrawer: DrawerLayout
     private lateinit var mNavigationView: NavigationView
 
-    private lateinit var mSearchView:SearchEditTextLayout
-    private lateinit var mToolbar:Toolbar
+    private lateinit var mSearchView: SearchEditTextLayout
+    private lateinit var mToolbar: Toolbar
+
+    private lateinit var mFAB: FloatingActionButton
     companion object {
         private val TAG = MainActivity::class.simpleName
         private val FRAG_ID = "CURRENT_FRAGMENT"
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mSearchView = bind(R.id.search_edittextlayout)
         mSearchView.setCallback(this)
         mToolbar = bind(R.id.toolbar)
+        mFAB = bind(R.id.fab_main)
 
         mNavigationView = bind(R.id.nav_view)
         mNavigationView.setNavigationItemSelectedListener(this)
@@ -91,7 +95,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Highlight the selected item has been done by NavigationView
         item.isChecked = true
         // Set action bar title
-        title = item.title
+        mToolbar.title = item.title
         mDrawer.closeDrawer(GravityCompat.START)
         return true
     }
@@ -101,6 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (item.itemId != R.id.nav_notes) {
             mToolbar.visibility =  View.VISIBLE
             mSearchView.visibility = View.GONE
+
             setSupportActionBar(mToolbar)
             val toggle = ActionBarDrawerToggle(
                     this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -111,5 +116,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mToolbar.visibility = View.GONE
             mSearchView.visibility = View.VISIBLE
         }
+
+        mFAB.visibility = if (item.itemId == R.id.nav_settings){ View.GONE } else { View.VISIBLE }
     }
 }

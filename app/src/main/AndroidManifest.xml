@@ -33,7 +33,8 @@
                 android:value=".ui.main.MainActivity" />
         </activity>
 
-        <activity android:name=".ui.auth.AuthActivity">
+        <activity android:name=".ui.auth.AuthActivity"
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

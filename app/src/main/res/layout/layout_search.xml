@@ -45,17 +45,18 @@
             app:srcCompat="@drawable/ic_search_box_mic"
             android:scaleType="center"
             android:clickable="true"
-            android:layout_marginEnd="@dimen/search_box_voice_margin_start"
             android:contentDescription="@string/description_start_voice_search"
             android:background="?attr/selectableItemBackgroundBorderless"/>
         <ImageView
-            android:id="@+id/search_box_collapsed_more_options"
+            android:id="@+id/search_box_collapsed_overflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_search_box_more_options"
+            android:layout_marginStart="@dimen/search_box_overflow_margin_start"
             android:scaleType="center"
             android:clickable="true"
             android:contentDescription="@string/description_start_voice_search"
             android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
+
 </FrameLayout>

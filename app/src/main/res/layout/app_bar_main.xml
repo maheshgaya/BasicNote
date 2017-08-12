@@ -20,6 +20,7 @@
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_main"
         app:srcCompat="@drawable/ic_add"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"

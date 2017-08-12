@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
     <item name="ic_menu_notes" type="drawable">@drawable/ic_note_multiple</item>
-    <item name="ic_menu_setting" type="drawable">@drawable/ic_wrench</item>
+    <item name="ic_menu_setting" type="drawable">@drawable/ic_settings</item>
     <item name="ic_menu_trash" type="drawable">@drawable/ic_trash</item>
     <item name="ic_menu_search" type="drawable">@drawable/ic_search</item>
 </resources>
