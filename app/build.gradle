@@ -10,6 +10,9 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+        vectorDrawables {
+            useSupportLibrary true
+        }
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -36,8 +39,15 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    //firebase
+    //Firebase
     compile "com.google.firebase:firebase-auth:$firebase_version"
+    compile "com.google.firebase:firebase-config:$firebase_version"
+    compile "com.google.firebase:firebase-core:$firebase_version"
+    compile "com.google.firebase:firebase-crash:$firebase_version"
+    compile "com.google.firebase:firebase-database:$firebase_version"
+    compile "com.google.firebase:firebase-messaging:$firebase_version"
+    compile "com.google.firebase:firebase-storage:$firebase_version"
+
 }
 repositories {
     mavenCentral()

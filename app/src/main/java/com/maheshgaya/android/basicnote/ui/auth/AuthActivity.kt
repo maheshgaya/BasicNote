@@ -1,4 +1,4 @@
-package com.maheshgaya.android.basicnote.ui
+package com.maheshgaya.android.basicnote.ui.auth
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
