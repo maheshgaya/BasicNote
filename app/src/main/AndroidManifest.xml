@@ -37,6 +37,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.note.NoteActivity"
+            android:theme="@style/AppTheme.NoteBar"
+            android:parentActivityName=".ui.main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
         <activity android:name=".ui.profile.ProfileActivity">
         </activity>
     </application>

@@ -23,6 +23,7 @@ import com.maheshgaya.android.basicnote.Constants
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
+import com.maheshgaya.android.basicnote.ui.note.NoteActivity
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
@@ -30,7 +31,8 @@ import com.squareup.picasso.Picasso
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-        SearchEditTextLayout.Callback {
+        SearchEditTextLayout.Callback, View.OnClickListener {
+
 
     private lateinit var mDrawer: DrawerLayout
     private lateinit var mNavigationView: NavigationView
@@ -58,8 +60,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mSearchView = bind(R.id.search_edittextlayout)
         mSearchView.setCallback(this)
         mToolbar = bind(R.id.toolbar)
+        mToolbar.visibility = View.GONE
         mFAB = bind(R.id.fab_main)
-
+        mFAB.setOnClickListener(this)
         mNavigationView = bind(R.id.nav_view)
         mNavigationView.setNavigationItemSelectedListener(this)
 
@@ -69,6 +72,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setupUserProfile()
 
+    }
+
+    override fun onClick(view: View?) {
+        when (view!!.id){
+            R.id.fab_main -> {
+                startActivity(Intent(this@MainActivity, NoteActivity::class.java))
+            }
+        }
     }
 
     fun setupUserProfile(){
@@ -131,18 +142,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
+        }  else if (mSearchView.isExpandedView()){
+            mSearchView.expandView(false)
         } else {
             super.onBackPressed()
         }
     }
 
-
-
-
-    override fun onDestroy() {
-        supportFinishAfterTransition()
-        super.onDestroy()
-    }
 
     private fun openAuthActivity(){
         val intent = Intent(this@MainActivity, AuthActivity::class.java)
@@ -161,7 +167,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragmentList =
                 mapOf(Pair(R.id.nav_settings, SettingFragment::class.java),
                         Pair(R.id.nav_trash, TrashFragment::class.java),
-                        Pair(R.id.nav_notes, NoteFragment::class.java))
+                        Pair(R.id.nav_notes, NoteListFragment::class.java))
         // Handle navigation view item clicks here.
         val fragment = fragmentList[item.itemId]!!.newInstance()
 

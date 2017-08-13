@@ -9,7 +9,7 @@ import com.maheshgaya.android.basicnote.R
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class NoteFragment: Fragment(), View.OnClickListener {
+class NoteListFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view!!.id){
 
@@ -18,8 +18,7 @@ class NoteFragment: Fragment(), View.OnClickListener {
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater!!.inflate(R.layout.fragment_note, container, false)
-        rootView.findViewById<TextView>(R.id.notes_textview).setOnClickListener(this)
+        val rootView = inflater!!.inflate(R.layout.fragment_note_list, container, false)
         return rootView
     }
 }

@@ -31,6 +31,8 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     private lateinit var mExpandedSearchEditText: EditText
     private lateinit var mExpandedSearchVoiceView: ImageView
 
+    private var mIsExpanded = false
+
     var hintText:String = ""
     set(value) {
         mExpandedSearchEditText.hint = value
@@ -58,7 +60,10 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
     private var mCallback: Callback? = null
 
+    fun isExpandedView(): Boolean = mIsExpanded
+
     private fun setupViews(moreOptions: Boolean = false) {
+        mIsExpanded = false
         View.inflate(context, R.layout.layout_search, this)
         mCollapsedSearchBoxView = findViewById(R.id.search_box_collapsed)
         mCollapsedDrawerMenu = findViewById(R.id.search_box_collapsed_drawer_menu)
@@ -100,6 +105,25 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
     }
 
+    fun expandView(value: Boolean){
+        if (value){
+            mIsExpanded = true
+            mExpandedSearchBoxView.animation = fadeIn
+            mExpandedSearchBoxView.visibility = View.VISIBLE
+            mExpandedSearchBoxView.animation = fadeOut
+            mCollapsedSearchBoxView.visibility = View.GONE
+            mExpandedSearchEditText.requestFocus()
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        } else{
+            mIsExpanded = false
+            mExpandedSearchBoxView.visibility = View.GONE
+            mCollapsedSearchBoxView.visibility = View.VISIBLE
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mExpandedSearchEditText.windowToken, 0)
+        }
+    }
+
 
 
     override fun onClick(view: View?) {
@@ -110,21 +134,12 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
             }
             R.id.search_box_collapsed_textview -> {
-                mExpandedSearchBoxView.animation = fadeIn
-                mExpandedSearchBoxView.visibility = View.VISIBLE
-                mExpandedSearchBoxView.animation = fadeOut
-                mCollapsedSearchBoxView.visibility = View.GONE
-                mExpandedSearchEditText.requestFocus()
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                expandView(true)
                 mCallback!!.onSearchViewClicked()
 
             }
             R.id.search_box_expanded_back -> {
-                mExpandedSearchBoxView.visibility = View.GONE
-                mCollapsedSearchBoxView.visibility = View.VISIBLE
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(mExpandedSearchEditText.windowToken, 0)
+                expandView(false)
                 mCallback!!.onBackButtonClicked()
             }
             R.id.search_box_expanded_voice -> {

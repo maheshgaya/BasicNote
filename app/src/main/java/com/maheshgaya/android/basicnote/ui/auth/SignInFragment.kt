@@ -88,7 +88,7 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
 
     override fun updateUI(user: FirebaseUser?) {
         if (user != null){
-            startActivity(Intent(activity, MainActivity::class.java))
+            (activity as AuthActivity).openMainActivity()
         }
     }
 

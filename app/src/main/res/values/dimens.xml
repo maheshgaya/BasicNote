@@ -18,4 +18,8 @@
     <dimen name="search_box_overflow_margin_start">16dp</dimen>
     <dimen name="search_box_elevation">4dp</dimen>
     <dimen name="search_box_expanded_padding">10dp</dimen>
+    <dimen name="format_icon_padding">12dp</dimen>
+    <dimen name="note_editor_padding">16dp</dimen>
+    <dimen name="note_separator_padding">8dp</dimen>
+    <dimen name="list_item_normal_padding">4dp</dimen>
 </resources>

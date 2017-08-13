@@ -53,6 +53,10 @@
     <string name="nav_sign_out">Sign out</string>
     <string name="description_search_back">return back</string>
     <string name="hint_search_trash">Search trash&#8230;</string>
+    <string name="action_share">Share</string>
+    <string name="description_format_bold">Change text format to bold</string>
+    <string name="hint_note_body">What\'s new?</string>
+    <string name="hint_note_title">Title</string>
 
 
 </resources>
