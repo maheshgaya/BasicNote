@@ -3,16 +3,16 @@
     android:id="@+id/search_box_framelayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_marginTop="@dimen/search_box_margin_top"
-    android:layout_marginStart="@dimen/search_box_margin_start"
-    android:layout_marginEnd="@dimen/search_box_margin_end"
-    android:layout_marginBottom="@dimen/search_box_margin_bottom"
     android:elevation="@dimen/search_box_elevation"
-    android:background="@drawable/rounded_corners"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:transitionName="@string/transition_search_toolbar"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="@dimen/search_box_margin_top"
+        android:layout_marginStart="@dimen/search_box_margin_start"
+        android:layout_marginEnd="@dimen/search_box_margin_end"
+        android:layout_marginBottom="@dimen/search_box_margin_bottom"
         android:id="@+id/search_box_collapsed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +37,7 @@
             android:layout_marginStart="@dimen/search_box_text_margin_start"
             android:textColorHint="@color/searchbox_hint_text_color"
             android:textSize="@dimen/search_box_collapsed_text_size"
-            android:hint="@string/hint_search"/>
+            android:hint="@string/hint_search_notes"/>
         <ImageView
             android:id="@+id/search_box_collapsed_voice"
             android:layout_width="wrap_content"
@@ -53,6 +53,47 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_search_box_more_options"
             android:layout_marginStart="@dimen/search_box_overflow_margin_start"
+            android:scaleType="center"
+            android:clickable="true"
+            android:contentDescription="@string/description_start_voice_search"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_box_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/square_corners"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/search_box_expanded_padding"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/search_box_expanded_back"
+            android:scaleType="center"
+            android:padding="@dimen/search_box_icon_padding"
+            app:srcCompat="@drawable/ic_back"
+            android:clickable="true"
+            android:contentDescription="@string/description_search_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/search_box_expanded_edittext"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/search_box_text_margin_start"
+            android:textColorHint="@color/searchbox_hint_text_color"
+            android:textSize="@dimen/search_box_collapsed_text_size"
+            android:hint="@string/hint_search_notes"/>
+        <ImageView
+            android:id="@+id/search_box_expanded_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_search_box_mic"
             android:scaleType="center"
             android:clickable="true"
             android:contentDescription="@string/description_start_voice_search"

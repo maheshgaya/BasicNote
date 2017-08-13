@@ -17,4 +17,5 @@
     <dimen name="search_box_text_margin_start">16dp</dimen>
     <dimen name="search_box_overflow_margin_start">16dp</dimen>
     <dimen name="search_box_elevation">4dp</dimen>
+    <dimen name="search_box_expanded_padding">10dp</dimen>
 </resources>

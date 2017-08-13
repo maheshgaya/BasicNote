@@ -23,7 +23,7 @@
                 app:searchIcon="@null"
                 android:maxWidth="10000dp"
                 app:iconifiedByDefault="false"
-                app:queryHint="@string/hint_search"
+                app:queryHint="@string/hint_search_notes"
                 android:inputType="text|textAutoCorrect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

@@ -42,12 +42,6 @@ fun String.toCamelCase(): String {
 
 }
 
-fun startSearchActivity(activity: Activity) {
-    val toolbar: Toolbar = activity.findViewById(R.id.toolbar)
-    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, toolbar, activity.getString(R.string.transition_toolbar))
-    activity.startActivity(Intent(activity, SearchActivity::class.java), options.toBundle())
-}
-
 fun signOut() {
     FirebaseAuth.getInstance().signOut()
 }

@@ -107,7 +107,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    override fun onBackButtonClicked() {
+    override fun onMenuButtonClicked() {
+        Log.d(TAG, "onMenuButtonClicked")
         if (mDrawer.isDrawerOpen(GravityCompat.START)){
             mDrawer.closeDrawer(GravityCompat.START)
         } else{
@@ -116,10 +117,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onSearchViewClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(TAG, "onSearchViewClicked")
     }
 
+    override fun onBackButtonClicked() {
+        Log.d(TAG, "onBackButtonClicked")
+    }
 
+    override fun onVoiceSearchClicked() {
+        Log.d(TAG, "onVoiceSearchClicked")
+    }
 
     override fun onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -129,22 +136,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+
+
+
     override fun onDestroy() {
         supportFinishAfterTransition()
         super.onDestroy()
     }
 
-    fun openAuthActivity(){
-
+    private fun openAuthActivity(){
+        val intent = Intent(this@MainActivity, AuthActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.nav_sign_out){
             signOut()
-            val intent = Intent(this@MainActivity, AuthActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-            finish()
+            openAuthActivity()
             return true
         }
 
@@ -168,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun showSearchToolbar(item: MenuItem){
 
-        if (item.itemId != R.id.nav_notes) {
+        if (item.itemId != R.id.nav_notes && item.itemId != R.id.nav_trash) {
             mToolbar.visibility =  View.VISIBLE
             mSearchView.visibility = View.GONE
 
@@ -181,6 +191,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             mToolbar.visibility = View.GONE
             mSearchView.visibility = View.VISIBLE
+            mSearchView.hintText =
+                    if (item.itemId == R.id.nav_trash) getString(R.string.hint_search_trash)
+                    else getString(R.string.hint_search_notes)
         }
 
         mFAB.visibility = if (item.itemId == R.id.nav_settings){ View.GONE } else { View.VISIBLE }

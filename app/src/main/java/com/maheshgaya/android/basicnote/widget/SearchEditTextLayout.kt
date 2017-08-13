@@ -1,34 +1,64 @@
 package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import com.maheshgaya.android.basicnote.R
+import android.text.Editable
+import android.util.Log
+import android.view.animation.AlphaAnimation
+import android.widget.*
+
 
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class SearchEditTextLayout : FrameLayout, View.OnClickListener {
+class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayout(context, attrs), View.OnClickListener {
 
-    private lateinit var mCollapsedSearchBoxView:View
+    companion object {
+        private val TAG = SearchEditTextLayout::class.simpleName
+    }
+    private lateinit var mCollapsedSearchBoxView: View
     private lateinit var mCollapsedDrawerMenu: View
-    private lateinit var mCollapsedSearchTextView: View
+    private lateinit var mCollapsedSearchTextView: TextView
     private lateinit var mCollapsedSearchVoiceView: View
     private lateinit var mCollapsedOverflowView: View
 
-    constructor(context: Context?, attrs: AttributeSet?): super(context, attrs){
+    private lateinit var mExpandedSearchBoxView: View
+    private lateinit var mExpandedBackImageView: View
+    private lateinit var mExpandedSearchEditText: EditText
+    private lateinit var mExpandedSearchVoiceView: ImageView
+
+    var hintText:String = ""
+    set(value) {
+        mExpandedSearchEditText.hint = value
+        mCollapsedSearchTextView.hint = value
+    }
+
+    val fadeIn = AlphaAnimation(0.0f, 1.0f)
+    val fadeOut = AlphaAnimation(1.0f, 0.0f)
+
+    init{
         setupViews(false)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, moreOptions:Boolean): super(context, attrs){
-        setupViews(moreOptions)
+    interface Callback {
+        fun onMenuButtonClicked()
+        fun onBackButtonClicked()
+        fun onSearchViewClicked()
+        fun onVoiceSearchClicked()
     }
+
+    fun setCallback(listener: Callback) {
+        mCallback = listener
+    }
+
 
     private var mCallback: Callback? = null
 
-    private fun setupViews(moreOptions: Boolean){
+    private fun setupViews(moreOptions: Boolean = false) {
         View.inflate(context, R.layout.layout_search, this)
         mCollapsedSearchBoxView = findViewById(R.id.search_box_collapsed)
         mCollapsedDrawerMenu = findViewById(R.id.search_box_collapsed_drawer_menu)
@@ -39,30 +69,75 @@ class SearchEditTextLayout : FrameLayout, View.OnClickListener {
         if (!moreOptions) mCollapsedOverflowView.visibility = View.GONE
 
         mCollapsedDrawerMenu.setOnClickListener(this)
-    }
-    interface Callback {
-        fun onBackButtonClicked()
-        fun onSearchViewClicked()
-    }
+        mCollapsedSearchTextView.setOnClickListener(this)
 
-    fun setCallback(listener: Callback){
-        mCallback = listener
+
+        mExpandedSearchBoxView = findViewById(R.id.search_box_expanded)
+        mExpandedBackImageView = findViewById(R.id.search_box_expanded_back)
+        mExpandedSearchEditText = findViewById(R.id.search_box_expanded_edittext)
+        mExpandedSearchVoiceView = findViewById(R.id.search_box_expanded_voice)
+
+        mExpandedBackImageView.setOnClickListener(this)
+        mExpandedSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+                mExpandedSearchVoiceView.setImageResource(
+                        if (text.isEmpty()) R.drawable.ic_search_box_mic else R.drawable.ic_close)
+                mExpandedSearchVoiceView.tag =
+                        if (text.isEmpty()) context.getString(R.string.tag_mic)
+                        else context.getString(R.string.tag_close)
+            }
+
+            override fun beforeTextChanged(text: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun afterTextChanged(text: Editable) {
+
+            }
+        })
+        mExpandedSearchVoiceView.setOnClickListener(this)
+
+
     }
 
 
 
     override fun onClick(view: View?) {
-        when (view!!.id){
+        when (view!!.id) {
             R.id.search_box_collapsed_drawer_menu -> {
-                mCallback!!.onBackButtonClicked()
+                Log.d(TAG, "search_box_collapsed_drawer_menu")
+                mCallback!!.onMenuButtonClicked()
 
             }
             R.id.search_box_collapsed_textview -> {
-                Toast.makeText(context, "EditText Opened", Toast.LENGTH_SHORT).show()
+                mExpandedSearchBoxView.animation = fadeIn
+                mExpandedSearchBoxView.visibility = View.VISIBLE
+                mExpandedSearchBoxView.animation = fadeOut
+                mCollapsedSearchBoxView.visibility = View.GONE
+                mExpandedSearchEditText.requestFocus()
+                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                mCallback!!.onSearchViewClicked()
+
+            }
+            R.id.search_box_expanded_back -> {
+                mExpandedSearchBoxView.visibility = View.GONE
+                mCollapsedSearchBoxView.visibility = View.VISIBLE
+                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(mExpandedSearchEditText.windowToken, 0)
+                mCallback!!.onBackButtonClicked()
+            }
+            R.id.search_box_expanded_voice -> {
+                if (mExpandedSearchVoiceView.tag == context.getString(R.string.tag_mic)) {
+                    mCallback!!.onVoiceSearchClicked()
+                } else {
+                    mExpandedSearchEditText.text.clear()
+                }
             }
         }
 
     }
+
 
 
 }
