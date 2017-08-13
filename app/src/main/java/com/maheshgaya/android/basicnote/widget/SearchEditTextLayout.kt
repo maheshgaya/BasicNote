@@ -10,18 +10,36 @@ import com.maheshgaya.android.basicnote.R
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayout(context, attrs),
-        View.OnClickListener {
+class SearchEditTextLayout : FrameLayout, View.OnClickListener {
 
-    private var mCollapsedSearchBoxView:View
-    private var mCollapsedDrawerMenu: View
-    private var mCollapsedSearchTextView: View
-    private var mCollapsedSearchVoiceView: View
-    private var mCollapsedOverflowView: View
+    private lateinit var mCollapsedSearchBoxView:View
+    private lateinit var mCollapsedDrawerMenu: View
+    private lateinit var mCollapsedSearchTextView: View
+    private lateinit var mCollapsedSearchVoiceView: View
+    private lateinit var mCollapsedOverflowView: View
 
+    constructor(context: Context?, attrs: AttributeSet?): super(context, attrs){
+        setupViews(false)
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?, moreOptions:Boolean): super(context, attrs){
+        setupViews(moreOptions)
+    }
 
     private var mCallback: Callback? = null
 
+    private fun setupViews(moreOptions: Boolean){
+        View.inflate(context, R.layout.layout_search, this)
+        mCollapsedSearchBoxView = findViewById(R.id.search_box_collapsed)
+        mCollapsedDrawerMenu = findViewById(R.id.search_box_collapsed_drawer_menu)
+        mCollapsedSearchTextView = findViewById(R.id.search_box_collapsed_textview)
+        mCollapsedSearchVoiceView = findViewById(R.id.search_box_collapsed_voice)
+
+        mCollapsedOverflowView = findViewById(R.id.search_box_collapsed_overflow)
+        if (!moreOptions) mCollapsedOverflowView.visibility = View.GONE
+
+        mCollapsedDrawerMenu.setOnClickListener(this)
+    }
     interface Callback {
         fun onBackButtonClicked()
         fun onSearchViewClicked()
@@ -32,16 +50,6 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     }
 
 
-    init {
-        View.inflate(context, R.layout.layout_search, this)
-        mCollapsedSearchBoxView = findViewById(R.id.search_box_collapsed)
-        mCollapsedDrawerMenu = findViewById(R.id.search_box_collapsed_drawer_menu)
-        mCollapsedSearchTextView = findViewById(R.id.search_box_collapsed_textview)
-        mCollapsedSearchVoiceView = findViewById(R.id.search_box_collapsed_voice)
-        mCollapsedOverflowView = findViewById(R.id.search_box_collapsed_overflow)
-
-        mCollapsedDrawerMenu.setOnClickListener(this)
-    }
 
     override fun onClick(view: View?) {
         when (view!!.id){

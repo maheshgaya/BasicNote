@@ -47,6 +47,8 @@
 
     <!-- Validation -->
     <string name="required">Required</string>
+    <string name="description_app_image">Basic Note Icon</string>
+    <string name="nav_sign_out">Sign out</string>
 
 
 </resources>

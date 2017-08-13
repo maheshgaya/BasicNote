@@ -19,7 +19,6 @@ class NoteFragment: Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view!!.id){
             R.id.notes_textview -> {
-                startActivity(Intent(activity, AuthActivity::class.java))
             }
         }
     }

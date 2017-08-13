@@ -39,6 +39,9 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+    //Picasso
+    compile "com.squareup.picasso:picasso:$picasso_version"
+
     //Firebase
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.firebase:firebase-config:$firebase_version"

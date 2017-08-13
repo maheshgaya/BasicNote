@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
@@ -59,12 +60,15 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
         mLastNameTextInputLayout = rootView.bind(R.id.auth_lastname_textinputlayout)
         mLastNameTextEditText = rootView.bind(R.id.auth_lastname_textedittext)
 
-        mSignInTextView.setOnClickListener(this)
         //configure google sign up button
         (0..mGoogleSignUpButton.childCount)
                 .map { mGoogleSignUpButton.getChildAt(it) }
                 .filterIsInstance<TextView>()
                 .forEach { it.text = getString(R.string.sign_up_with_google) }
+
+        mSignInTextView.setOnClickListener(this)
+        mEmailSignUpButton.setOnClickListener(this)
+        mGoogleSignUpButton.setOnClickListener(this)
         return rootView
     }
 
@@ -73,6 +77,11 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
             R.id.sign_in_has_account_textview -> {
                 val fragment = AuthActivity.mFragmentList[R.layout.fragment_sign_in]!!.newInstance() as Fragment
                 fragmentManager.beginTransaction().replace(R.id.framelayout_auth, fragment, AuthActivity.FRAG_ID).commit()
+            }
+            R.id.sign_up_with_email_button -> {
+                createAccount(mEmailTextEditText.text.toString(), mPasswordTextEditText.text.toString())
+            }
+            R.id.sign_up_with_google_button -> {
             }
         }
     }
@@ -96,10 +105,13 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
                         val database = FirebaseDatabase.getInstance()
                         val ref = database.getReference("users/" + user!!.uid)
                         //save the user's record to database
-                        ref.setValue(User(user.uid, mFirstNameTextEditText.text.toString(),
-                                mLastNameTextEditText.text.toString(), user.email))
+                        val thisUser = User(user.uid, mFirstNameTextEditText.text.toString(),
+                                mLastNameTextEditText.text.toString(), user.email)
+                        ref.setValue(thisUser)
                         Toast.makeText(context, getString(R.string.account_successfully_created), Toast.LENGTH_SHORT).show()
-
+                        val profileUpdate = UserProfileChangeRequest.Builder()
+                                .setDisplayName(thisUser.firstName + " " + thisUser.lastName).build()
+                        mFirebaseAuth.currentUser!!.updateProfile(profileUpdate)
                         mFirebaseAuth.currentUser!!.sendEmailVerification()
                     } else {
                         // If sign in fails, display a message to the user.
