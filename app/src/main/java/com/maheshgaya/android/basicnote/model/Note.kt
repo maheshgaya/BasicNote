@@ -9,10 +9,18 @@ import com.maheshgaya.android.basicnote.Constants
  */
 
 
-data class Note(var id: String? = null, var title: String = "",
+/**
+ * The Note model
+ * @param uid User ID (From Firebase)
+ * @param title Title text of the note
+ * @param body Body text of the note
+ * @param tags Tags for the note
+ */
+data class Note(var uid: String? = null, var title: String = "",
                 var body: String = "", var tags: String? = ""):Parcelable{
 
     companion object {
+        /** for database */
         val TABLE_NAME = Constants.NOTE_TABLE
 
         @JvmField @Suppress("unused")
@@ -31,14 +39,23 @@ data class Note(var id: String? = null, var title: String = "",
         }
     }
 
+    /**
+     * For parcelable
+     */
     private constructor(parcelIn:Parcel) : this(
-            id = parcelIn.readString(),
+            uid = parcelIn.readString(),
             title = parcelIn.readString(),
             body = parcelIn.readString(),
             tags = parcelIn.readString()
             )
+
+    /**
+     * writes to parcel
+     * @param out Written Parcel
+     * @param flags Flags
+     */
     override fun writeToParcel(out: Parcel?, flags: Int) {
-        out!!.writeString(id)
+        out!!.writeString(uid)
         out.writeString(title)
         out.writeString(body)
         out.writeString(tags)

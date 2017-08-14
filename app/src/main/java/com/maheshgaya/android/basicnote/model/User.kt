@@ -7,10 +7,19 @@ import com.maheshgaya.android.basicnote.Constants
 /**
  * Created by Mahesh Gaya on 8/13/17.
  */
+/**
+ * User model
+ * @param id User ID from Firebase
+ * @param firstName First name of the user
+ * @param lastName Last name of the user
+ * @param email Email of the user
+ * @param imageUrl ImageUrl of the user's profile picture
+ */
 data class User(var id: String? = null, var firstName: String? = null, var lastName: String? = null,
                 var email: String? = null, var imageUrl: String? = null):Parcelable{
     
     companion object {
+        /** for database */
         val TABLE_NAME = Constants.USER_TABLE
 
         @JvmField @Suppress("unused")

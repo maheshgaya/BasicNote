@@ -7,4 +7,9 @@
         <attr name="colorUnchecked" format="color"/>
         <attr name="colorChecked" format="color"/>
     </declare-styleable>
+
+    <attr name="noteEditText" format="reference"/>
+    <declare-styleable name="NoteEditText">
+
+    </declare-styleable>
 </resources>
