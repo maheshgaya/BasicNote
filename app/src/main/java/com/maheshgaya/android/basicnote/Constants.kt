@@ -5,4 +5,5 @@ package com.maheshgaya.android.basicnote
  */
 object Constants{
     const val USER_TABLE = "users"
+    const val NOTE_TABLE = "notes"
 }

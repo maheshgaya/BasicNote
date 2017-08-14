@@ -2,6 +2,7 @@ package com.maheshgaya.android.basicnote.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.maheshgaya.android.basicnote.Constants
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
@@ -10,6 +11,8 @@ data class User(var id: String? = null, var firstName: String? = null, var lastN
                 var email: String? = null, var imageUrl: String? = null):Parcelable{
     
     companion object {
+        val TABLE_NAME = Constants.USER_TABLE
+
         @JvmField @Suppress("unused")
         val CREATOR: Parcelable.Creator<User> = object : Parcelable.Creator<User> {
 

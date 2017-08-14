@@ -15,4 +15,5 @@
     <color name="searchbox_hint_text_color">#757575</color>
 
     <color name="note_editor_menu_bg_color">#f9f9f9</color>
+    <color name="note_editor_menu_bg_color_dark">#d4d4d4</color>
 </resources>

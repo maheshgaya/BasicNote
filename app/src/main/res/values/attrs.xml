@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default CheckedButton style. -->
+    <attr name="checkedButtonStyle" format="reference" />
+    <declare-styleable name="CheckedButton">
+        <attr name="checked" format="boolean"/>
+        <attr name="colorUnchecked" format="color"/>
+        <attr name="colorChecked" format="color"/>
+    </declare-styleable>
+</resources>

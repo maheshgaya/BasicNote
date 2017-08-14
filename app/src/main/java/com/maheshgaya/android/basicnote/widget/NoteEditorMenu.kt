@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import com.maheshgaya.android.basicnote.R
 
 /**
@@ -12,9 +11,9 @@ import com.maheshgaya.android.basicnote.R
  */
 class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(context, attrs), View.OnClickListener {
     private var mMenuLayout: View
-    private var mBoldImageView: View
-    private var mItalicImageView: View
-    private var mUnderlineImageView: View
+    private var mBoldCheckedButton: CheckedButton
+    private var mItalicCheckedButton: CheckedButton
+    private var mUnderlineCheckedButton: CheckedButton
 
     interface Callback{
         fun onBoldClick()
@@ -25,13 +24,13 @@ class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(cont
     init {
         View.inflate(context, R.layout.layout_note_editor_menu, this)
         mMenuLayout = findViewById(R.id.note_editor_menu_layout)
-        mBoldImageView = findViewById(R.id.format_bold_imagebutton)
-        mItalicImageView = findViewById(R.id.format_italic_imagebutton)
-        mUnderlineImageView = findViewById(R.id.format_underline_imagebutton)
+        mBoldCheckedButton = findViewById(R.id.format_bold_imagebutton)
+        mItalicCheckedButton = findViewById(R.id.format_italic_imagebutton)
+        mUnderlineCheckedButton = findViewById(R.id.format_underline_imagebutton)
 
-        mBoldImageView.setOnClickListener(this)
-        mItalicImageView.setOnClickListener(this)
-        mUnderlineImageView.setOnClickListener(this)
+        mBoldCheckedButton.setOnClickListener(this)
+        mItalicCheckedButton.setOnClickListener(this)
+        mUnderlineCheckedButton.setOnClickListener(this)
     }
 
     fun setCallback(listener: Callback) {
@@ -44,13 +43,16 @@ class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(cont
     override fun onClick(view: View?) {
         when (view!!.id){
             R.id.format_bold_imagebutton -> {
-                Toast.makeText(context, "Bold", Toast.LENGTH_SHORT).show()
+                mBoldCheckedButton.toggle()
+                mCallback!!.onBoldClick()
             }
             R.id.format_italic_imagebutton -> {
-                Toast.makeText(context, "Italic", Toast.LENGTH_SHORT).show()
+                mItalicCheckedButton.toggle()
+                mCallback!!.onItalicClick()
             }
             R.id.format_underline_imagebutton -> {
-                Toast.makeText(context, "underline", Toast.LENGTH_SHORT).show()
+                mUnderlineCheckedButton.toggle()
+                mCallback!!.onUnderlineClick()
             }
         }
     }

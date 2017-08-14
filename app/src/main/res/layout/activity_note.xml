@@ -33,6 +33,7 @@
         android:layout_height="50dp">
 
         <com.maheshgaya.android.basicnote.widget.NoteEditorMenu
+            android:id="@+id/note_editor_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

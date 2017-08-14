@@ -12,6 +12,7 @@
         android:padding="@dimen/note_editor_padding">
 
         <EditText
+            android:id="@+id/note_title_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -32,10 +33,11 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/note_edittext"
+                android:id="@+id/note_body_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:autoLink="web|email"
+                android:focusable="true"
                 android:background="@null"
                 android:gravity="top"
                 android:hint="@string/hint_note_body"

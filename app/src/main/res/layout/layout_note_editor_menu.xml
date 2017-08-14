@@ -7,10 +7,10 @@
 
 
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
@@ -26,35 +26,42 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.maheshgaya.android.basicnote.widget.CheckedButton
                 android:id="@+id/format_bold_imagebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                app:colorUnchecked="@color/note_editor_menu_bg_color"
+                app:colorChecked="@color/note_editor_menu_bg_color_dark"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:checked="false"
                 android:clickable="true"
-                android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/description_format_bold"
                 android:padding="@dimen/format_icon_padding"
                 app:srcCompat="@drawable/ic_format_bold" />
 
-            <ImageView
+            <com.maheshgaya.android.basicnote.widget.CheckedButton
                 android:id="@+id/format_italic_imagebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:clickable="true"
-                android:background="?android:attr/selectableItemBackground"
+                app:colorUnchecked="@color/note_editor_menu_bg_color"
+                app:colorChecked="@color/note_editor_menu_bg_color_dark"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:checked="false"
                 android:contentDescription="@string/description_format_bold"
                 android:padding="@dimen/format_icon_padding"
                 app:srcCompat="@drawable/ic_format_italic" />
 
-            <ImageView
+            <com.maheshgaya.android.basicnote.widget.CheckedButton
                 android:id="@+id/format_underline_imagebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:clickable="true"
-                android:background="?android:attr/selectableItemBackground"
+                app:colorUnchecked="@color/note_editor_menu_bg_color"
+                app:colorChecked="@color/note_editor_menu_bg_color_dark"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:checked="false"
                 android:contentDescription="@string/description_format_bold"
                 android:padding="@dimen/format_icon_padding"
                 app:srcCompat="@drawable/ic_format_underline" />

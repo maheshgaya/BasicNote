@@ -2,6 +2,7 @@ package com.maheshgaya.android.basicnote.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.maheshgaya.android.basicnote.Constants
 
 /**
  * Created by Mahesh Gaya on 8/12/17.
@@ -12,6 +13,8 @@ data class Note(var id: String? = null, var title: String = "",
                 var body: String = "", var tags: String? = ""):Parcelable{
 
     companion object {
+        val TABLE_NAME = Constants.NOTE_TABLE
+
         @JvmField @Suppress("unused")
         val CREATOR: Parcelable.Creator<Note> = object : Parcelable.Creator<Note> {
 
