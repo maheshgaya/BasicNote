@@ -2,12 +2,14 @@ package com.maheshgaya.android.basicnote.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.Note
+import com.maheshgaya.android.basicnote.util.fromHtml
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
@@ -67,8 +69,8 @@ class NoteListAdapter(list:MutableList<Note>): RecyclerView.Adapter<NoteListAdap
          * @param note Note model
          */
         fun setNote(note: Note){
-            noteTitle.text = note.title
-            noteBody.text = note.body
+            noteTitle.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
+            noteBody.text = fromHtml(note.body).trim()
         }
 
     }

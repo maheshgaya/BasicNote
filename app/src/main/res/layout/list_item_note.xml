@@ -3,24 +3,27 @@
     android:id="@+id/item_note_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@null"
     android:layout_margin="@dimen/list_item_normal_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="@dimen/cardview_default_radius"
     xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
         android:orientation="vertical"
-        android:padding="@dimen/list_item_normal_padding"
+        android:background="@null"
+        android:padding="@dimen/list_item_text_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/item_note_title"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            tools:text="title"
+            android:background="@null"
+            android:textStyle="bold"
+            android:textSize="@dimen/title_text_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/item_note_body"
-            tools:text="body\nbody\n"
+            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

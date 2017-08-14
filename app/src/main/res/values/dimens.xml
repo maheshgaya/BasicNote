@@ -22,4 +22,7 @@
     <dimen name="note_editor_padding">16dp</dimen>
     <dimen name="note_separator_padding">8dp</dimen>
     <dimen name="list_item_normal_padding">4dp</dimen>
+    <dimen name="list_item_text_padding">8dp</dimen>
+    <dimen name="recycler_fab_padding">80dp</dimen>
+    <dimen name="title_text_size">16sp</dimen>
 </resources>

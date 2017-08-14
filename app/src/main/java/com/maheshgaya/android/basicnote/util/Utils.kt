@@ -12,7 +12,7 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.ui.search.SearchActivity
 import android.text.Html
 import android.text.Spanned
-
+import android.util.Log
 
 
 /**
@@ -74,18 +74,21 @@ fun signOut() {
     FirebaseAuth.getInstance().signOut()
 }
 
+
 /**
  * convert Html to Spanned
  * @param html HTML in String format
  * @return html in Spanned format
  */
-fun fromHtml(html: String): Spanned {
+fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
+    val TAG = "fromHtml"
     val result: Spanned
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+        result = Html.fromHtml(html, mode)
     } else {
-        result = Html.fromHtml(html)
+        result = Html.fromHtml(html.toString())
     }
+
     return result
 }
 
@@ -94,7 +97,7 @@ fun fromHtml(html: String): Spanned {
  * @param span HTML in Spanned format
  * @return html in String format
  */
-fun toHtml(span: Spanned): String{
+fun toHtml(span: Spanned): String {
     val result: String
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
         result = Html.toHtml(span, Html.FROM_HTML_MODE_LEGACY)

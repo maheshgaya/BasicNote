@@ -16,12 +16,15 @@ import com.maheshgaya.android.basicnote.Constants
  * @param body Body text of the note
  * @param tags Tags for the note
  */
-data class Note(var uid: String? = null, var title: String = "",
-                var body: String = "", var tags: String? = ""):Parcelable{
+data class Note(var id: String? = null, var uid: String? = null, var title: String = "",
+                var body: String = "", var tags: String? = "",
+                var lastEdited:Long = System.currentTimeMillis()):Parcelable{
 
     companion object {
         /** for database */
         val TABLE_NAME = Constants.NOTE_TABLE
+        val SUB_TABLE_MAIN = Constants.NOTE_MAIN
+        val SUB_TABLE_TRASH = Constants.NOTE_TRASH
 
         @JvmField @Suppress("unused")
         val CREATOR: Parcelable.Creator<Note> = object : Parcelable.Creator<Note> {
@@ -43,10 +46,12 @@ data class Note(var uid: String? = null, var title: String = "",
      * For parcelable
      */
     private constructor(parcelIn:Parcel) : this(
+            id = parcelIn.readString(),
             uid = parcelIn.readString(),
             title = parcelIn.readString(),
             body = parcelIn.readString(),
-            tags = parcelIn.readString()
+            tags = parcelIn.readString(),
+            lastEdited = parcelIn.readLong()
             )
 
     /**
@@ -55,10 +60,12 @@ data class Note(var uid: String? = null, var title: String = "",
      * @param flags Flags
      */
     override fun writeToParcel(out: Parcel?, flags: Int) {
-        out!!.writeString(uid)
+        out!!.writeString(id)
+        out.writeString(uid)
         out.writeString(title)
         out.writeString(body)
         out.writeString(tags)
+        out.writeLong(lastEdited)
     }
 
     override fun describeContents(): Int = 0
