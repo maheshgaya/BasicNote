@@ -10,4 +10,5 @@ object Constants{
     const val NOTE_MAIN = "main"
     const val NOTE_TRASH = "trash"
     const val NOTE_SHARED = "shared"
+
 }

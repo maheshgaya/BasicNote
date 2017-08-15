@@ -25,6 +25,7 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
+import com.maheshgaya.android.basicnote.ui.note.NoteFragment
 import com.maheshgaya.android.basicnote.ui.search.SearchResultFragment
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.signOut
@@ -34,7 +35,6 @@ import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
         SearchEditTextLayout.Callback, View.OnClickListener {
-
 
     private lateinit var mDrawer: DrawerLayout
     private lateinit var mNavigationView: NavigationView
@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mDatabase = FirebaseDatabase.getInstance()
+
+    private val mSearchResultFragment = SearchResultFragment::class.java.newInstance()
+    private var mFragment: Fragment? = null
 
     val mFragmentList =
             mapOf(Pair(R.id.nav_settings, SettingFragment::class.java),
@@ -134,6 +137,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+        mSearchResultFragment.searchQuery = text.toString()
+    }
+
     override fun onSearchViewClicked() {
         mFAB.visibility = View.GONE
         setSearchResultView(true)
@@ -149,19 +156,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun setSearchResultView(value: Boolean){
-        val fragment:Fragment
+        val fragment:Fragment?
+        mSearchResultFragment.clearList()
         if (value) {
-            fragment = SearchResultFragment::class.java.newInstance()
+            fragment = mSearchResultFragment
         } else{
-            fragment = NoteListFragment::class.java.newInstance()
+            fragment = mFragment
         }
+
+
+        mSearchResultFragment.mainSearch = mFragment !is TrashFragment
+        Log.d(TAG +":mainSearch", mSearchResultFragment.mainSearch.toString())
         supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, fragment, FRAG_ID).commit()
     }
+
     override fun onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
         }  else if (mSearchView.isExpandedView()){
+            mSearchView.clearText()
             mSearchView.expandView(false)
+            setSearchResultView(false)
         } else {
             super.onBackPressed()
         }
@@ -183,11 +198,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         // Handle navigation view item clicks here.
-        val fragment = mFragmentList[item.itemId]!!.newInstance()
+        mFragment = mFragmentList[item.itemId]!!.newInstance()
 
         showSearchToolbar(item)
 
-        supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, fragment, FRAG_ID).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
         // Highlight the selected item has been done by NavigationView
         item.isChecked = true
         // Set action bar title

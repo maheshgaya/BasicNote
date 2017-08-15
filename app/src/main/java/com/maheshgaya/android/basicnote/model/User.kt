@@ -22,6 +22,13 @@ data class User(var id: String? = null, var firstName: String? = null, var lastN
         /** for database */
         val TABLE_NAME = Constants.USER_TABLE
 
+        val COLUMN_ID = "id"
+        val COLUMN_FIRST_NAME = "firstName"
+        val COLUMN_LAST_NAME = "lastName"
+        val COLUMN_EMAIL = "email"
+        val COLUMN_IMAGE_URL = "imageUrl"
+
+
         @JvmField @Suppress("unused")
         val CREATOR: Parcelable.Creator<User> = object : Parcelable.Creator<User> {
 

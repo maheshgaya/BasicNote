@@ -32,6 +32,7 @@
             android:id="@+id/search_box_collapsed_textview"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:maxLines="1"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginStart="@dimen/search_box_text_margin_start"
@@ -86,6 +87,10 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginStart="@dimen/search_box_text_margin_start"
+            android:lines="1"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:imeOptions="actionDone|actionNext"
             android:textColorHint="@color/searchbox_hint_text_color"
             android:textSize="@dimen/search_box_collapsed_text_size"
             android:hint="@string/hint_search_notes"/>

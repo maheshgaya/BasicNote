@@ -67,6 +67,7 @@
     <string name="create_note">Create Note</string>
     <string name="empty_note_list">No notes yet?! Create a new one.</string>
     <string name="no_body_text">No text</string>
+    <string name="no_search_results">No search results!</string>
 
 
 </resources>

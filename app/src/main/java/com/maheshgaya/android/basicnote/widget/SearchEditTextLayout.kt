@@ -84,6 +84,11 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
          * voice view is clicked
          */
         fun onVoiceSearchClicked()
+
+        /**
+         * SearchQuery
+         */
+        fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int)
     }
 
     /** callback for the listeners */
@@ -140,6 +145,7 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
                 mExpandedSearchVoiceView.tag =
                         if (text.isEmpty()) context.getString(R.string.tag_mic)
                         else context.getString(R.string.tag_close)
+                mCallback?.onTextChanged(text, start, before, count)
             }
 
             override fun beforeTextChanged(text: CharSequence, start: Int, count: Int, after: Int) {
@@ -201,6 +207,7 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
             }
             R.id.search_box_expanded_back -> {
                 //collapsed the searchview and sets callback
+                clearText()
                 expandView(false)
                 mCallback?.onBackButtonClicked()
             }
@@ -209,13 +216,16 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
                 if (mExpandedSearchVoiceView.tag == context.getString(R.string.tag_mic)) {
                     mCallback?.onVoiceSearchClicked()
                 } else {
-                    mExpandedSearchEditText.text.clear()
+                    clearText()
                 }
             }
         }
 
     }
 
+    fun clearText() {
+        mExpandedSearchEditText.text.clear()
+    }
 
 
 }

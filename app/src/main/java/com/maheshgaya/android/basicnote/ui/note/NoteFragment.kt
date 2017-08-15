@@ -1,6 +1,7 @@
 package com.maheshgaya.android.basicnote.ui.note
 
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
@@ -127,12 +128,13 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
             mNote = savedInstanceState.getParcelable(NOTE_KEY)
             mKey = if (!mNote.id.isNullOrEmpty()) mNote.id!! else ""
             updateUI()
-        } else if (activity.intent != null && activity.intent.hasExtra(NoteFragment.NOTE_KEY)){
+        } else if (activity.intent != null && activity.intent.hasExtra(NOTE_KEY)){
             //from another activity
-            mNote = activity.intent.getParcelableExtra<Note>(NoteFragment.NOTE_KEY)
+            mNote = activity.intent.getParcelableExtra<Note>(NOTE_KEY)
             mKey = mNote.id!!
             updateUI()
         }
+
         super.onViewStateRestored(savedInstanceState)
 
     }
@@ -156,6 +158,10 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         when (item!!.itemId) {
             R.id.action_share -> {
+                true
+            }
+            android.R.id.home -> {
+                activity.onBackPressed()
                 true
             }
             else -> {

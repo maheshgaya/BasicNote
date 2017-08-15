@@ -30,7 +30,7 @@ fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
         result = Html.fromHtml(html, mode)
     } else {
-        result = Html.fromHtml(html.toString())
+        result = Html.fromHtml(html)
     }
 
     return result

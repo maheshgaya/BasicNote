@@ -26,9 +26,11 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
     /** context */
     private var mContext = context
 
+
     init {
         setHasStableIds(true)
     }
+
     /**
      * bind the view holder
      */
@@ -68,6 +70,7 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
                 val position= view.tag as Int
                 intent.putExtra(NoteFragment.NOTE_KEY, mList[position])
                 mContext!!.startActivity(intent)
+
             }
         }
     }
