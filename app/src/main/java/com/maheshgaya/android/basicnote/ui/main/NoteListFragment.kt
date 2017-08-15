@@ -27,14 +27,17 @@ class NoteListFragment : Fragment(), View.OnClickListener {
     }
 
     private var mNoteList: MutableList<Note> = mutableListOf()
-    private var mNoteAdapter = NoteListAdapter(mNoteList)
+    private var mNoteAdapter = NoteListAdapter(null, mNoteList)
     //Views
     private lateinit var mNoteRecyclerView: RecyclerView
 
     //Firebase
     private val mUser = FirebaseAuth.getInstance().currentUser
     private val mDatabaseRef = FirebaseDatabase.getInstance()
-            .getReference(Note.TABLE_NAME + "/" + mUser?.uid)
+            .getReference(Note.getMainPath(mUser?.uid))
+    init {
+        mDatabaseRef.keepSynced(true)
+    }
 
     var mNoteValueListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -62,6 +65,7 @@ class NoteListFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_note_list, container, false)
         mNoteRecyclerView = rootView.bind(R.id.note_recyclerview)
+        mNoteAdapter = NoteListAdapter(context, mNoteList)
         mNoteRecyclerView.adapter = mNoteAdapter
         mNoteRecyclerView.layoutManager = LinearLayoutManager(context)
         return rootView

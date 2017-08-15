@@ -59,6 +59,10 @@
     <string name="hint_note_title">Title</string>
 
     <string name="untitled">Untitled</string>
+    <string name="last_edited">Last Edited:</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="empty_note_not_saved">Note not saved because it\'s empty!</string>
 
 
 </resources>

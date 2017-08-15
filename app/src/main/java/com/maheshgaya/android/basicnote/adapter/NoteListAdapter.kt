@@ -1,6 +1,8 @@
 package com.maheshgaya.android.basicnote.adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
@@ -9,16 +11,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.Note
+import com.maheshgaya.android.basicnote.ui.note.NoteActivity
+import com.maheshgaya.android.basicnote.ui.note.NoteFragment
 import com.maheshgaya.android.basicnote.util.fromHtml
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
  */
 //TODO Test this class
-class NoteListAdapter(list:MutableList<Note>): RecyclerView.Adapter<NoteListAdapter.ViewHolder>(), View.OnClickListener {
+class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.Adapter<NoteListAdapter.ViewHolder>(), View.OnClickListener {
 
     /** mutable list of notes */
     private var mList = list
+    /** context */
+    private var mContext = context
 
     /**
      * bind the view holder
@@ -28,6 +34,7 @@ class NoteListAdapter(list:MutableList<Note>): RecyclerView.Adapter<NoteListAdap
         holder?.setNote(mList[position])
         //set onClickListener
         holder?.noteCard?.setOnClickListener(this)
+        holder?.noteCard?.tag = position
     }
 
     override fun getItemCount(): Int = mList.size
@@ -38,6 +45,7 @@ class NoteListAdapter(list:MutableList<Note>): RecyclerView.Adapter<NoteListAdap
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent!!.context)
         // Inflate the custom layout and return a new holder instance
+
         return ViewHolder(inflater.inflate(R.layout.list_item_note, parent, false))
     }
 
@@ -47,7 +55,10 @@ class NoteListAdapter(list:MutableList<Note>): RecyclerView.Adapter<NoteListAdap
     override fun onClick(view: View?) {
         when (view!!.id){
             R.id.item_note_cardview -> {
-                //TODO Open NoteActivity
+                val intent = Intent(mContext as Activity, NoteActivity::class.java)
+                val position= view.tag as Int
+                intent.putExtra(NoteFragment.NOTE_KEY, mList[position])
+                mContext!!.startActivity(intent)
             }
         }
     }

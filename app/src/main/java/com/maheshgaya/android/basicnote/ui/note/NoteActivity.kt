@@ -2,7 +2,9 @@ package com.maheshgaya.android.basicnote.ui.note
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.maheshgaya.android.basicnote.R
+import com.maheshgaya.android.basicnote.model.Note
 import com.maheshgaya.android.basicnote.ui.main.MainActivity
 
 /**
@@ -11,6 +13,7 @@ import com.maheshgaya.android.basicnote.ui.main.MainActivity
 class NoteActivity : AppCompatActivity() {
     companion object {
         private val FRAG_ID = "frag_note"
+        private val TAG = NoteActivity::class.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

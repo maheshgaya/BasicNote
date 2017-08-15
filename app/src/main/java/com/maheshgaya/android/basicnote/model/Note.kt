@@ -26,6 +26,8 @@ data class Note(var id: String? = null, var uid: String? = null, var title: Stri
         val SUB_TABLE_MAIN = Constants.NOTE_MAIN
         val SUB_TABLE_TRASH = Constants.NOTE_TRASH
 
+        fun getMainPath(uid: String?):String = Note.TABLE_NAME + "/" + uid + "/" + Note.SUB_TABLE_MAIN
+
         @JvmField @Suppress("unused")
         val CREATOR: Parcelable.Creator<Note> = object : Parcelable.Creator<Note> {
 

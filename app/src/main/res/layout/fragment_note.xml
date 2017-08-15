@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/note_editor_padding">
+        android:paddingTop="@dimen/small_padding"
+        android:paddingStart="@dimen/note_editor_padding"
+        android:paddingEnd="@dimen/note_editor_padding"
+        android:paddingBottom="@dimen/note_editor_padding">
 
         <EditText
             android:id="@+id/note_title_edittext"

@@ -1,6 +1,7 @@
 package com.maheshgaya.android.basicnote.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.support.annotation.IdRes
 import android.support.v4.app.ActivityOptionsCompat
@@ -13,21 +14,14 @@ import com.maheshgaya.android.basicnote.ui.search.SearchActivity
 import android.text.Html
 import android.text.Spanned
 import android.util.Log
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-
-/**
- * Binds views for activity
- */
-fun <T : View> Activity.bind(@IdRes res: Int): T = findViewById(res)
-
-/**
- * Binds views (Generic)
- */
-fun <T : View> View.bind(@IdRes res: Int): T = this.findViewById(res)
 
 /**
  * validates email
@@ -67,42 +61,31 @@ fun String.toCamelCase(): String {
 
 }
 
-/**
- * Signs the user out
- */
-fun signOut() {
-    FirebaseAuth.getInstance().signOut()
-}
+fun Long.toDate(context: Context): String{
+    val df = SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault())
+    val fullFormat = df.format(this)
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
 
+    val today = Calendar.getInstance()
+    val time: String
+    if (today.get(Calendar.YEAR) == df.calendar.get(Calendar.YEAR)){
+        if (today.get(Calendar.DAY_OF_YEAR) == df.calendar.get(Calendar.DAY_OF_YEAR)){
+            time = context.getString(R.string.today) + " " + timeFormat
+        } else if ((today.get(Calendar.DAY_OF_YEAR) - 1 == df.calendar.get(Calendar.DAY_OF_YEAR))){
+            time = context.getString(R.string.yesterday) + " " + timeFormat
+        } else {
+            time = fullFormat
+        }
 
-/**
- * convert Html to Spanned
- * @param html HTML in String format
- * @return html in Spanned format
- */
-fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
-    val TAG = "fromHtml"
-    val result: Spanned
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        result = Html.fromHtml(html, mode)
     } else {
-        result = Html.fromHtml(html.toString())
+      time = fullFormat
     }
 
-    return result
+    return String.format(context.getString(R.string.last_edited) + " %s", time)
 }
 
-/**
- * convert Spanned to Html
- * @param span HTML in Spanned format
- * @return html in String format
- */
-fun toHtml(span: Spanned): String {
-    val result: String
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        result = Html.toHtml(span, Html.FROM_HTML_MODE_LEGACY)
-    } else {
-        result = Html.toHtml(span)
-    }
-    return result
-}
+
+fun Date.formatDate(): String = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(this)
+
+fun parseDate(month: Int, date: Int, year: Int): Date = SimpleDateFormat("MM/dd/yyyy", Locale.US).parse(
+        (month + 1).toString() + "/" + date.toString() + "/" + year.toString())

@@ -92,7 +92,6 @@ class CheckedButton : AppCompatImageView, Checkable {
         return CheckedButton::class.java.name
     }
 
-
 }
 
 
