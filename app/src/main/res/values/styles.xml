@@ -27,6 +27,10 @@
         <item name="colorAccent">@color/colorCursor</item>
     </style>
 
+    <style name="AppTheme.EmptyButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorLightAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

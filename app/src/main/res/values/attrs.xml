@@ -10,6 +10,30 @@
 
     <attr name="noteEditText" format="reference"/>
     <declare-styleable name="NoteEditText">
+        <!-- empty -->
+    </declare-styleable>
+
+    <attr name="emptyView" format="reference"/>
+    <declare-styleable name="EmptyView">
+        <attr name="buttonName" format="string"/>
+        <attr name="buttonVisibility">
+            <enum name="gone" value="0"/>
+            <enum name="visible" value="1"/>
+            <enum name="invisible" value="2"/>
+        </attr>
+
+        <attr name="errorText" format="string"/>
+        <attr name="errorTextVisibility">
+            <enum name="gone" value="0"/>
+            <enum name="visible" value="1"/>
+            <enum name="invisible" value="2"/>
+        </attr>
+        <attr name="imageSrc" format="reference"/>
+        <attr name="imageSrcVisibility">
+            <enum name="gone" value="0"/>
+            <enum name="visible" value="1"/>
+            <enum name="invisible" value="2"/>
+        </attr>
 
     </declare-styleable>
 </resources>

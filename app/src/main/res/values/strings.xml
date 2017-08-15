@@ -63,6 +63,10 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="empty_note_not_saved">Note not saved because it\'s empty!</string>
+    <string name="empty_trash">Empty Trash</string>
+    <string name="create_note">Create Note</string>
+    <string name="empty_note_list">No notes yet?! Create a new one.</string>
+    <string name="no_body_text">No text</string>
 
 
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -24,6 +25,7 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
+import com.maheshgaya.android.basicnote.ui.search.SearchResultFragment
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
@@ -45,10 +47,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val mAuth = FirebaseAuth.getInstance()
     private val mDatabase = FirebaseDatabase.getInstance()
 
+    val mFragmentList =
+            mapOf(Pair(R.id.nav_settings, SettingFragment::class.java),
+                    Pair(R.id.nav_trash, TrashFragment::class.java),
+                    Pair(R.id.nav_notes, NoteListFragment::class.java))
 
     companion object {
         private val TAG = MainActivity::class.simpleName
         private val FRAG_ID = "frag_main"
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,17 +135,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onSearchViewClicked() {
-        Log.d(TAG, "onSearchViewClicked")
+        mFAB.visibility = View.GONE
+        setSearchResultView(true)
     }
 
     override fun onBackButtonClicked() {
-        Log.d(TAG, "onBackButtonClicked")
+        mFAB.visibility = View.VISIBLE
+        setSearchResultView(false)
     }
 
     override fun onVoiceSearchClicked() {
         Log.d(TAG, "onVoiceSearchClicked")
     }
 
+    fun setSearchResultView(value: Boolean){
+        val fragment:Fragment
+        if (value) {
+            fragment = SearchResultFragment::class.java.newInstance()
+        } else{
+            fragment = NoteListFragment::class.java.newInstance()
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, fragment, FRAG_ID).commit()
+    }
     override fun onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
@@ -164,12 +182,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return true
         }
 
-        val fragmentList =
-                mapOf(Pair(R.id.nav_settings, SettingFragment::class.java),
-                        Pair(R.id.nav_trash, TrashFragment::class.java),
-                        Pair(R.id.nav_notes, NoteListFragment::class.java))
         // Handle navigation view item clicks here.
-        val fragment = fragmentList[item.itemId]!!.newInstance()
+        val fragment = mFragmentList[item.itemId]!!.newInstance()
 
         showSearchToolbar(item)
 

@@ -1,20 +1,7 @@
 package com.maheshgaya.android.basicnote.util
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.support.annotation.IdRes
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.app.Fragment
-import android.support.v7.widget.Toolbar
-import android.view.View
-import com.google.firebase.auth.FirebaseAuth
 import com.maheshgaya.android.basicnote.R
-import com.maheshgaya.android.basicnote.ui.search.SearchActivity
-import android.text.Html
-import android.text.Spanned
-import android.util.Log
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 

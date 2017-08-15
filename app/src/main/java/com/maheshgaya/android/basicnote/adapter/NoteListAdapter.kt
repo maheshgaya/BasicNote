@@ -26,6 +26,9 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
     /** context */
     private var mContext = context
 
+    init {
+        setHasStableIds(true)
+    }
     /**
      * bind the view holder
      */
@@ -38,6 +41,12 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
     }
 
     override fun getItemCount(): Int = mList.size
+
+    fun getItem(position: Int): Note = mList[position]
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).hashCode().toLong()
+    }
 
     /**
      * Creates the view holder by inflating the list item layout
@@ -81,7 +90,9 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
          */
         fun setNote(note: Note){
             noteTitle.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
-            noteBody.text = fromHtml(note.body).trim()
+            val body = fromHtml(note.body).trim()
+            noteBody.text = body
+            noteBody.hint = if (body.isNullOrEmpty()) mContext?.getString(R.string.no_body_text) else ""
         }
 
     }

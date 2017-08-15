@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0277bd</color>
-    <color name="colorPrimaryDark">#01579b</color>
-    <color name="colorAccent">#d50000</color>
+    <color name="colorPrimary">#1E88E5</color>
+    <color name="colorPrimaryDark">#1565C0</color>
+    <color name="colorAccent">#2979FF</color>
     <color name="colorGray">#eeeeee</color>
     <color name="colorDarkGray">#757575</color>
 
@@ -14,6 +14,7 @@
     <color name="searchbox_bg_color">#f9f9f9</color>
     <color name="searchbox_hint_text_color">#757575</color>
 
-    <color name="note_editor_menu_bg_color">#f9f9f9</color>
+    <color name="note_list_item_divider">#f3f3f3</color>
+    <color name="note_editor_menu_bg_color">#f3f3f3</color>
     <color name="note_editor_menu_bg_color_dark">#d4d4d4</color>
 </resources>

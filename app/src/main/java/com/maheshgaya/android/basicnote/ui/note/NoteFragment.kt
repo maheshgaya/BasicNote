@@ -98,11 +98,18 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
 
     }
 
+    /**
+     * save to db if user quits the fragment or orientation changes
+     */
     override fun onPause() {
         super.onPause()
         saveToDatabase()
     }
 
+    /**
+     * saves state of this fragment
+     * @param outState bundle to save
+     */
     override fun onSaveInstanceState(outState: Bundle?) {
         saveToDatabase()
         outState?.putParcelable(NOTE_KEY, mNote)
@@ -110,17 +117,21 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
 
     }
 
+    /**
+     * Restore note
+     * @param savedInstanceState bundle from another activity or this activity
+     */
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState != null && savedInstanceState.containsKey(NOTE_KEY)) {
+            //for change in orientation
             mNote = savedInstanceState.getParcelable(NOTE_KEY)
-            mKey = mNote.id!!
-            Log.d(TAG + ":onViewStateRestored", mNote.toString())
+            mKey = if (!mNote.id.isNullOrEmpty()) mNote.id!! else ""
             updateUI()
         } else if (activity.intent != null && activity.intent.hasExtra(NoteFragment.NOTE_KEY)){
+            //from another activity
             mNote = activity.intent.getParcelableExtra<Note>(NoteFragment.NOTE_KEY)
             mKey = mNote.id!!
             updateUI()
-            Log.d(TAG, mNote.toString())
         }
         super.onViewStateRestored(savedInstanceState)
 
@@ -145,7 +156,6 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         when (item!!.itemId) {
             R.id.action_share -> {
-                saveToDatabase() //TODO have autosave
                 true
             }
             else -> {

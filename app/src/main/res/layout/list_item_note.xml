@@ -18,12 +18,22 @@
             android:id="@+id/item_note_title"
             android:background="@null"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="@dimen/title_text_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <View
+            android:layout_marginTop="@dimen/small_padding"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:background="@color/note_list_item_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
         <TextView
             android:id="@+id/item_note_body"
             android:background="@null"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

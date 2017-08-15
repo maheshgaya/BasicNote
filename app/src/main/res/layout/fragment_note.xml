@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/small_padding"
+        android:paddingTop="@dimen/note_editor_padding"
         android:paddingStart="@dimen/note_editor_padding"
         android:paddingEnd="@dimen/note_editor_padding"
         android:paddingBottom="@dimen/note_editor_padding">

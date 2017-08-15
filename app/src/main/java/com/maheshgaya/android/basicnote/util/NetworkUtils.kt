@@ -1,6 +1,7 @@
 package com.maheshgaya.android.basicnote.util
 
 import android.content.Context
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 

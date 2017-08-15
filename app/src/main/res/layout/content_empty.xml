@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginBottom="@dimen/empty_bottom_margin"
+    android:padding="@dimen/normal_padding"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/empty_imageview"
+        tools:src="@drawable/ic_note_multiple"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
+    <TextView
+        android:layout_marginTop="@dimen/normal_padding"
+        android:id="@+id/empty_textview"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Oops an error occurred!"/>
+    <Button
+        android:id="@+id/empty_button"
+        android:layout_marginTop="@dimen/normal_padding"
+        android:theme="@style/AppTheme.EmptyButton"
+        tools:text="Click me"
+        android:padding="@dimen/normal_padding"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
