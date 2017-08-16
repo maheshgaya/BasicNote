@@ -20,7 +20,16 @@
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/title_text_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/item_note_last_edited"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="start"
+            android:textSize="@dimen/small_text_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <View
@@ -29,6 +38,7 @@
             android:background="@color/note_list_item_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
+
         <TextView
             android:id="@+id/item_note_body"
             android:background="@null"

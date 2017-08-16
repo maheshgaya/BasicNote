@@ -48,7 +48,11 @@ fun String.toCamelCase(): String {
 
 }
 
-fun Long.toDate(context: Context): String{
+fun Long.toLastedEditedDate(context: Context): String{
+    return String.format(context.getString(R.string.last_edited) + " %s", this.time(context) )
+}
+
+private fun Long.time(context: Context):String{
     val df = SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault())
     val fullFormat = df.format(this)
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
@@ -65,10 +69,13 @@ fun Long.toDate(context: Context): String{
         }
 
     } else {
-      time = fullFormat
+        time = fullFormat
     }
+    return time
+}
 
-    return String.format(context.getString(R.string.last_edited) + " %s", time)
+fun Long.toDate(context: Context): String{
+    return String.format("%s", this.time(context) )
 }
 
 

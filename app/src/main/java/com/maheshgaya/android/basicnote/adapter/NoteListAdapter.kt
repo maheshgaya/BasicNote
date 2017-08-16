@@ -14,6 +14,8 @@ import com.maheshgaya.android.basicnote.model.Note
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteFragment
 import com.maheshgaya.android.basicnote.util.fromHtml
+import com.maheshgaya.android.basicnote.util.toDate
+import com.maheshgaya.android.basicnote.util.toLastedEditedDate
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
@@ -38,8 +40,8 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
         //sets title and body for the corresponding note
         holder?.setNote(mList[position])
         //set onClickListener
-        holder?.noteCard?.setOnClickListener(this)
-        holder?.noteCard?.tag = position
+        holder?.noteCardView?.setOnClickListener(this)
+        holder?.noteCardView?.tag = position
     }
 
     override fun getItemCount(): Int = mList.size
@@ -80,22 +82,26 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
      * ViewHolder to contain the item view
      */
     inner class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView){
+        private var context: Context = itemView!!.context
         /** Outer layout of the card */
-        var noteCard:View = itemView!!.findViewById(R.id.item_note_cardview)
+        var noteCardView:View = itemView!!.findViewById(R.id.item_note_cardview)
         /** Title textview */
-        var noteTitle:TextView = itemView!!.findViewById(R.id.item_note_title)
+        var noteTitleTextView:TextView = itemView!!.findViewById(R.id.item_note_title)
         /** Body textview */
-        var noteBody:TextView = itemView!!.findViewById(R.id.item_note_body)
+        var noteBodyTextView:TextView = itemView!!.findViewById(R.id.item_note_body)
+        /** Last edited */
+        var lastEditedTextView: TextView = itemView!!.findViewById(R.id.item_note_last_edited)
 
         /**
          * Sets text for note's title and body
          * @param note Note model
          */
         fun setNote(note: Note){
-            noteTitle.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
+            noteTitleTextView.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
             val body = fromHtml(note.body).trim()
-            noteBody.text = body
-            noteBody.hint = if (body.isNullOrEmpty()) mContext?.getString(R.string.no_body_text) else ""
+            noteBodyTextView.text = body
+            noteBodyTextView.hint = if (body.isNullOrEmpty()) mContext?.getString(R.string.no_body_text) else ""
+            lastEditedTextView.text = note.lastEdited.toDate(context = context)
         }
 
     }

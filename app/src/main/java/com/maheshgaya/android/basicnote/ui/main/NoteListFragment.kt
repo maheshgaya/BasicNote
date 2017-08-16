@@ -51,7 +51,7 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
             for (snapshot in dataSnapshot.children){
                 val note = snapshot.getValue<Note>(Note::class.java)
                 mNoteList.add(note!!)
-                mNoteList.reverse()
+                mNoteList.sortByDescending { it.lastEdited }
                 mNoteAdapter.notifyDataSetChanged()
                 setView()
             }

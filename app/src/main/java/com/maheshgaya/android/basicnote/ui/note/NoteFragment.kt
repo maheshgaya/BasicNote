@@ -1,11 +1,12 @@
 package com.maheshgaya.android.basicnote.ui.note
 
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
+import android.text.Editable
 import android.text.Spannable
+import android.text.TextWatcher
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -19,7 +20,7 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.Note
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.fromHtml
-import com.maheshgaya.android.basicnote.util.toDate
+import com.maheshgaya.android.basicnote.util.toLastedEditedDate
 import com.maheshgaya.android.basicnote.util.toHtml
 import com.maheshgaya.android.basicnote.widget.NoteEditText
 import com.maheshgaya.android.basicnote.widget.NoteEditorMenu
@@ -53,6 +54,8 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     /** keep the current note */
     private var mNote = Note()
 
+    private var mHasEdited = false
+
     companion object {
         //for logging purposes
         private val TAG = NoteFragment::class.simpleName
@@ -74,7 +77,36 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         mTitleEditText = rootView.findViewById(R.id.note_title_edittext)
         mBodyEditText = rootView.findViewById(R.id.note_body_edittext)
         mBodyEditText.requestFocus()
+        mBodyEditText.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(text: Editable?) {
+                mHasEdited = true
+                Log.d(TAG + ":afterTextChanged", mHasEdited.toString())
+            }
 
+            override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {
+                Log.d(TAG + ":beforeTextChanged", mHasEdited.toString())
+            }
+
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                mHasEdited = true
+                Log.d(TAG + ":onTextChanged", mHasEdited.toString())
+            }
+
+        })
+        mTitleEditText.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                mHasEdited = true
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                mHasEdited = true
+            }
+
+        })
+        mHasEdited = false
         return rootView
     }
 
@@ -104,7 +136,9 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      */
     override fun onPause() {
         super.onPause()
-        saveToDatabase()
+        if (mHasEdited) {
+            saveToDatabase()
+        }
     }
 
     /**
@@ -112,8 +146,11 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      * @param outState bundle to save
      */
     override fun onSaveInstanceState(outState: Bundle?) {
-        saveToDatabase()
+        if (mHasEdited) {
+            saveToDatabase()
+        }
         outState?.putParcelable(NOTE_KEY, mNote)
+
         super.onSaveInstanceState(outState)
 
     }
@@ -142,7 +179,9 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     private fun updateUI() {
         mTitleEditText.setText(fromHtml(mNote.title).trim())
         mBodyEditText.setText(fromHtml(mNote.body).trim())
-        mLastEditedTextView.text = mNote.lastEdited.toDate(context)
+        mLastEditedTextView.text = mNote.lastEdited.toLastedEditedDate(context)
+        mHasEdited = false
+        Log.d(TAG + ":updateUI", mHasEdited.toString())
     }
 
     /**
@@ -193,7 +232,9 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
                 body = toHtml(mBodyEditText.text))
         //append to user ref and create a new note to the database
         mDatabase.getReference(userRef + "/" + mKey).setValue(mNote)
-        mLastEditedTextView.text = mNote.lastEdited.toDate(context)
+        mLastEditedTextView.text = mNote.lastEdited.toLastedEditedDate(context)
+        mHasEdited = false
+        Log.d(TAG, "saveToDatabase()")
     }
 
     fun clearComposingText(){
@@ -220,6 +261,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
                     .forEach { mBodyEditText.text.removeSpan(it) }
             mEditorMenu.getBoldCheckedButton().isChecked = false
         }
+        mHasEdited = true
     }
 
     /**
@@ -242,6 +284,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
                     .forEach { mBodyEditText.text.removeSpan(it) }
             mEditorMenu.getItalicCheckedButton().isChecked = false
         }
+        mHasEdited = true
     }
 
     /**
@@ -264,6 +307,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
             }
             mEditorMenu.getUnderlineCheckedButton().isChecked = false
         }
+        mHasEdited = true
     }
 
 }

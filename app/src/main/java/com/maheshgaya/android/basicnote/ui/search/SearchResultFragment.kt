@@ -100,8 +100,17 @@ class SearchResultFragment : Fragment(){
     }
 
     fun setView(){
-        if (mNoteList.size == 0){ mEmptyView.visibility = View.VISIBLE; mMainView.visibility = View.GONE }
-        else { mEmptyView.visibility = View.GONE; mMainView.visibility = View.VISIBLE }
+        try {
+            if (mNoteList.size == 0) {
+                mEmptyView.visibility = View.VISIBLE; mMainView.visibility = View.GONE
+            } else {
+                mEmptyView.visibility = View.GONE; mMainView.visibility = View.VISIBLE
+            }
+        } catch (e: UninitializedPropertyAccessException){
+            Log.e(TAG, e.stackTrace.toString())
+        }
+
+
     }
 
 
