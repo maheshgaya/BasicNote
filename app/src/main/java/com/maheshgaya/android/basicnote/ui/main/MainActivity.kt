@@ -195,15 +195,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showSearchFragment(value: Boolean){
         if (value){
-            if (supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID) == null) {
-                supportFragmentManager.beginTransaction()
-                        .add(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
-            }
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
+            mSearchResultFragment.clearList()
+            mSearchResultFragment.mainSearch =
+                    supportFragmentManager.findFragmentByTag(FRAG_ID) !is TrashFragment
         } else{
-            if (supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID) != null) {
-                supportFragmentManager.beginTransaction()
-                        .remove(supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID)).commit()
-            }
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
+
         }
     }
 
