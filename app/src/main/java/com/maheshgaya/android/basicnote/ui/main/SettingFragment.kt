@@ -1,18 +1,9 @@
 package com.maheshgaya.android.basicnote.ui.main
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.maheshgaya.android.basicnote.R
-import android.preference.CheckBoxPreference
-import android.preference.Preference
 import android.content.SharedPreferences
-import android.preference.PreferenceFragment
-import android.preference.EditTextPreference
-import android.preference.ListPreference
+import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
-import android.widget.Toast
+import com.maheshgaya.android.basicnote.R
 
 
 /**

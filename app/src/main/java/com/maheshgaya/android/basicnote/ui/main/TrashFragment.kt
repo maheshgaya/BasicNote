@@ -2,13 +2,13 @@ package com.maheshgaya.android.basicnote.ui.main
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.Toolbar
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.Note
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.widget.EmptyView
-import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 
 
 /**
