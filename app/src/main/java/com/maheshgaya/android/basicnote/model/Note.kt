@@ -42,14 +42,10 @@ data class Note(var id: String? = null, var uid: String? = null, var title: Stri
 
             // This simply calls our new constructor (typically private) and
             // passes along the unmarshalled `Parcel`, and then returns the new object!
-            override fun createFromParcel(parcelIn: Parcel): Note {
-                return Note(parcelIn)
-            }
+            override fun createFromParcel(parcelIn: Parcel): Note = Note(parcelIn)
 
             // We just need to copy this and change the type to match our class.
-            override fun newArray(size: Int): Array<Note?> {
-                return arrayOfNulls(size)
-            }
+            override fun newArray(size: Int): Array<Note?> = arrayOfNulls(size)
         }
     }
 

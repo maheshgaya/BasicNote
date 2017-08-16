@@ -237,7 +237,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         Log.d(TAG, "saveToDatabase()")
     }
 
-    fun clearComposingText(){
+    private fun clearComposingText(){
         mBodyEditText.clearComposingText()
         mTitleEditText.clearComposingText()
     }

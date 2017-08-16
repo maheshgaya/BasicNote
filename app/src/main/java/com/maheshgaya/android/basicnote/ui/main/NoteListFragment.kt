@@ -45,7 +45,7 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
         mDatabaseRef.keepSynced(true)
     }
 
-    var mNoteValueListener: ValueEventListener = object : ValueEventListener {
+    private val mNoteValueListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             if (dataSnapshot.childrenCount > 0) mNoteList.clear()
             for (snapshot in dataSnapshot.children){

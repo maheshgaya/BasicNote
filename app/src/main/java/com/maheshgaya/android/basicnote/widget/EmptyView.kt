@@ -2,6 +2,7 @@ package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -12,38 +13,65 @@ import com.maheshgaya.android.basicnote.R
 /**
  * Created by Mahesh Gaya on 8/14/17.
  */
-class EmptyView:FrameLayout, View.OnClickListener {
+class EmptyView : FrameLayout, View.OnClickListener {
     companion object {
         /** For logging purposes */
         private val TAG = EmptyView::class.simpleName
-        private val VISIBLE = "visible"
-        private val INVISIBLE = "invisible"
-        private val GONE = "gone"
+
+        val GONE = 0
+        val VISIBLE = 1
+        val INVISIBLE = 2
     }
 
     //this should correspond to attrs.xml
-    private var mVisibilityMap = mapOf(Pair(GONE, 0), Pair(VISIBLE, 1),Pair(INVISIBLE, 2))
-    private var mViewVisibility = mapOf(Pair(0, View.GONE), Pair(1, View.VISIBLE), Pair(2, View.INVISIBLE))
 
-    private var mButtonName = ""
-    private var mButtonVisibility: Int = View.VISIBLE
+    private var mVisibilityMap = mapOf(Pair(0, View.GONE), Pair(1, View.VISIBLE), Pair(2, View.INVISIBLE))
 
-    private var mErrorText = ""
-    private var mErrorTextVisibility: Int = View.VISIBLE
+    var buttonName = ""
+        set(value) {
+            field = value
+            setViews()
+        }
+    var buttonVisibility: Int = VISIBLE
+        set(value) {
+            field = validateVisibility(value)
+            setViews()
+        }
 
-    private var mImageSrc:Int = 0
-    private var mImageSrcVisibility: Int = View.VISIBLE
+    var errorText = ""
+        set(value) {
+            field = value
+            setViews()
+        }
+    var errorTextVisibility: Int = VISIBLE
+        set(value) {
+            field = validateVisibility(value)
+            setViews()
+        }
+
+    var imageSrc: Int = 0
+        set(value) {
+            field = value
+            setViews()
+        }
+
+    var imageSrcVisibility: Int = VISIBLE
+        set(value) {
+            field = validateVisibility(value)
+            setViews()
+        }
 
     private var mImageView: ImageView
     private var mErrorTextView: TextView
     private var mButton: Button
 
-    interface Callback{
+    interface Callback {
         fun onEmptyButtonClick()
     }
+
     private var mCallback: Callback? = null
 
-    fun setCallback(listener: Callback){
+    fun setCallback(listener: Callback) {
         mCallback = listener
     }
 
@@ -52,6 +80,7 @@ class EmptyView:FrameLayout, View.OnClickListener {
      * Invoke constructor
      */
     constructor(context: Context?) : this(context, null)
+
     /**
      * Invoke constructor
      */
@@ -79,29 +108,46 @@ class EmptyView:FrameLayout, View.OnClickListener {
 
         //App attributes
         if (a.hasValue(R.styleable.EmptyView_buttonName))
-            mButtonName = a.getString(R.styleable.EmptyView_buttonName)
-        mButtonVisibility = a.getInt(R.styleable.EmptyView_buttonVisibility, mVisibilityMap.getValue(VISIBLE))
+            buttonName = a.getString(R.styleable.EmptyView_buttonName)
+        buttonVisibility = a.getInt(R.styleable.EmptyView_buttonVisibility, VISIBLE)
+        Log.d(TAG, buttonVisibility.toString())
 
         if (a.hasValue(R.styleable.EmptyView_errorText))
-            mErrorText = a.getString(R.styleable.EmptyView_errorText)
-        mErrorTextVisibility = a.getInt(R.styleable.EmptyView_errorTextVisibility, mVisibilityMap.getValue(VISIBLE))
+            errorText = a.getString(R.styleable.EmptyView_errorText)
+        errorTextVisibility = a.getInt(R.styleable.EmptyView_errorTextVisibility, VISIBLE)
+        Log.d(TAG, errorTextVisibility.toString())
 
-        mImageSrc = a.getResourceId(R.styleable.EmptyView_imageSrc, android.R.drawable.sym_def_app_icon)
-        mImageSrcVisibility = a.getInt(R.styleable.EmptyView_imageSrcVisibility, mVisibilityMap.getValue(VISIBLE))
+        imageSrc = a.getResourceId(R.styleable.EmptyView_imageSrc, android.R.drawable.sym_def_app_icon)
+        imageSrcVisibility = a.getInt(R.styleable.EmptyView_imageSrcVisibility, VISIBLE)
+        Log.d(TAG, imageSrcVisibility.toString())
 
         a.recycle()
 
-        mImageView.setImageResource(mImageSrc)
-        mImageView.visibility = mViewVisibility.getValue(mImageSrcVisibility)
-
-        mErrorTextView.text = mErrorText
-        mErrorTextView.visibility = mViewVisibility.getValue(mErrorTextVisibility)
-
-        mButton.text = mButtonName
-        mButton.visibility = mViewVisibility.getValue(mButtonVisibility)
+        setViews()
         mButton.setOnClickListener(this)
 
     }
+
+    private fun setViews() {
+        mImageView.setImageResource(imageSrc)
+        mImageView.tag = imageSrc
+        mImageView.visibility = mVisibilityMap.getValue(imageSrcVisibility)
+
+        mErrorTextView.text = errorText
+        mErrorTextView.visibility = mVisibilityMap.getValue(errorTextVisibility)
+
+        mButton.text = buttonName
+        mButton.visibility = mVisibilityMap.getValue(buttonVisibility)
+        invalidate()
+    }
+
+    private fun validateVisibility(value: Int): Int =
+            when (value) {
+                GONE -> GONE
+                INVISIBLE -> INVISIBLE
+                else -> VISIBLE
+            }
+
 
     override fun onClick(view: View?) {
         mCallback?.onEmptyButtonClick()

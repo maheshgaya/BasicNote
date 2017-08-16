@@ -34,14 +34,10 @@ data class User(var id: String? = null, var firstName: String? = null, var lastN
 
             // This simply calls our new constructor (typically private) and
             // passes along the unmarshalled `Parcel`, and then returns the new object!
-            override fun createFromParcel(parcelIn: Parcel): User {
-                return User(parcelIn)
-            }
+            override fun createFromParcel(parcelIn: Parcel): User = User(parcelIn)
 
             // We just need to copy this and change the type to match our class.
-            override fun newArray(size: Int): Array<User?> {
-                return arrayOfNulls(size)
-            }
+            override fun newArray(size: Int): Array<User?> = arrayOfNulls(size)
         }
     }
 

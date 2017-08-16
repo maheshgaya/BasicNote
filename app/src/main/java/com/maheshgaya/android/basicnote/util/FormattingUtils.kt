@@ -32,7 +32,7 @@ fun String.toCamelCase(): String {
     //convert the first character of each string
     stringArray.indices
             .asSequence()
-            .filterNot { stringArray[it].isNullOrEmpty() }
+            .filterNot { stringArray[it].isEmpty() }
             .forEach { stringArray[it] = stringArray[it][0].toUpperCase().toString() + stringArray[it].subSequence(1, stringArray[it].lastIndex + 1) }
 
     //build the string back with CamelCase
@@ -48,38 +48,34 @@ fun String.toCamelCase(): String {
 
 }
 
-fun Long.toLastedEditedDate(context: Context): String{
-    return String.format(context.getString(R.string.last_edited) + " %s", this.time(context) )
-}
+fun Long.toLastedEditedDate(context: Context): String = String.format(context.getString(R.string.last_edited) + " %s", this.time(context))
 
-private fun Long.time(context: Context):String{
+private fun Long.time(context: Context): String {
     val df = SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault())
     val fullFormat = df.format(this)
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
+    val dayFormat = SimpleDateFormat("EEE HH:mm", Locale.getDefault()).format(this)
 
     val today = Calendar.getInstance()
     val time: String
-    if (today.get(Calendar.YEAR) == df.calendar.get(Calendar.YEAR)){
-        if (today.get(Calendar.DAY_OF_YEAR) == df.calendar.get(Calendar.DAY_OF_YEAR)){
-            time = context.getString(R.string.today) + " " + timeFormat
-        } else if ((today.get(Calendar.DAY_OF_YEAR) - 1 == df.calendar.get(Calendar.DAY_OF_YEAR))){
-            time = context.getString(R.string.yesterday) + " " + timeFormat
-        } else {
-            time = fullFormat
-        }
-
-    } else {
-        time = fullFormat
+    time = when {
+        today.get(Calendar.DAY_OF_YEAR) == df.calendar.get(Calendar.DAY_OF_YEAR) ->
+            context.getString(R.string.today) + " " + timeFormat
+        today.get(Calendar.DAY_OF_YEAR) - 1 == df.calendar.get(Calendar.DAY_OF_YEAR) ->
+            context.getString(R.string.yesterday) + " " + timeFormat
+        today.get(Calendar.DAY_OF_YEAR) - 7 <= df.calendar.get(Calendar.DAY_OF_YEAR) ->
+            dayFormat
+        else -> fullFormat
     }
+
+
     return time
 }
 
-fun Long.toDate(context: Context): String{
-    return String.format("%s", this.time(context) )
-}
+fun Long.toDate(context: Context): String = String.format("%s", this.time(context))
 
 
 fun Date.formatDate(): String = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(this)
 
-fun parseDate(month: Int, date: Int, year: Int): Date = SimpleDateFormat("MM/dd/yyyy", Locale.US).parse(
+fun parseDate(month: Int, date: Int, year: Int): Date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(
         (month + 1).toString() + "/" + date.toString() + "/" + year.toString())

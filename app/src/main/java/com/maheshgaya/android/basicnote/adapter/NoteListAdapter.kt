@@ -20,7 +20,6 @@ import com.maheshgaya.android.basicnote.util.toLastedEditedDate
 /**
  * Created by Mahesh Gaya on 8/13/17.
  */
-//TODO Test this class
 class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.Adapter<NoteListAdapter.ViewHolder>(), View.OnClickListener {
 
     /** mutable list of notes */
@@ -100,7 +99,7 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
             noteTitleTextView.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
             val body = fromHtml(note.body).trim()
             noteBodyTextView.text = body
-            noteBodyTextView.hint = if (body.isNullOrEmpty()) mContext?.getString(R.string.no_body_text) else ""
+            noteBodyTextView.hint = if (body.isEmpty()) mContext?.getString(R.string.no_body_text) else ""
             lastEditedTextView.text = note.lastEdited.toDate(context = context)
         }
 

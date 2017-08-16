@@ -3,6 +3,7 @@ package com.maheshgaya.android.basicnote.util
 import android.content.Context
 import android.graphics.Typeface
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -11,8 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
  */
 fun isOnline(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkInfo = connectivityManager.activeNetworkInfo
-    return networkInfo != null && networkInfo.isConnectedOrConnecting
+    val networkInfo:NetworkInfo = connectivityManager.activeNetworkInfo
+    return networkInfo.isConnectedOrConnecting
 }
 
 /**

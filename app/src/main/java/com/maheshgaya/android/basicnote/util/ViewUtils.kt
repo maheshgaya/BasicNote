@@ -25,7 +25,6 @@ fun <T : View> View.bind(@IdRes res: Int): T = this.findViewById(res)
  * @return html in Spanned format
  */
 fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
-    val TAG = "fromHtml"
     val result: Spanned
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
         result = Html.fromHtml(html, mode)

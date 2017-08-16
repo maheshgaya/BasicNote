@@ -78,6 +78,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (supportFragmentManager.findFragmentByTag(FRAG_ID) == null) {
             onNavigationItemSelected(mNavigationView.menu.findItem(R.id.nav_notes))
+        } else {
+            when (supportFragmentManager.fragments[0]) {
+                is NoteListFragment -> {
+                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_notes))
+                }
+                is TrashFragment -> {
+                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_trash))
+                }
+                is SettingFragment -> {
+                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_settings))
+                }
+            }
         }
 
         setupUserProfile()
@@ -85,17 +97,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onClick(view: View?) {
-        when (view!!.id){
+        when (view!!.id) {
             R.id.fab_main -> {
                 startActivity(Intent(this@MainActivity, NoteActivity::class.java))
             }
         }
     }
 
-    fun setupUserProfile(){
-        val userNameTextView:TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_textview)
-        val userEmailTextView:TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_textview)
-        val userImageView:ImageView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_imageview)
+    private fun setupUserProfile() {
+        val userNameTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_textview)
+        val userEmailTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_textview)
+        val userImageView: ImageView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_imageview)
         val user = mAuth.currentUser
 
 
@@ -106,7 +118,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val currentUser = dataSnapshot.getValue<User>(User::class.java)
                 val name = currentUser!!.firstName + " " + currentUser.lastName
                 Log.d(TAG, currentUser.toString())
-                userNameTextView.setText(name)
+                userNameTextView.text = name
                 userEmailTextView.text = user.email
                 Picasso
                         .with(this@MainActivity)
@@ -130,9 +142,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onMenuButtonClicked() {
         Log.d(TAG, "onMenuButtonClicked")
-        if (mDrawer.isDrawerOpen(GravityCompat.START)){
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
-        } else{
+        } else {
             mDrawer.openDrawer(GravityCompat.START)
         }
     }
@@ -155,25 +167,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d(TAG, "onVoiceSearchClicked")
     }
 
-    fun setSearchResultView(value: Boolean){
-        val fragment:Fragment?
+    private fun setSearchResultView(value: Boolean) {
+        val fragment: Fragment?
         mSearchResultFragment.clearList()
         if (value) {
             fragment = mSearchResultFragment
-        } else{
+        } else {
             fragment = mFragment
         }
 
 
         mSearchResultFragment.mainSearch = mFragment !is TrashFragment
-        Log.d(TAG +":mainSearch", mSearchResultFragment.mainSearch.toString())
+        Log.d(TAG + ":mainSearch", mSearchResultFragment.mainSearch.toString())
         supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, fragment, FRAG_ID).commit()
     }
 
     override fun onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
-        }  else if (mSearchView.isExpandedView()){
+        } else if (mSearchView.isExpandedView()) {
             mSearchView.clearText()
             mSearchView.expandView(false)
             setSearchResultView(false)
@@ -183,7 +195,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    private fun openAuthActivity(){
+    private fun openAuthActivity() {
         val intent = Intent(this@MainActivity, AuthActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -191,30 +203,48 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_sign_out){
+        if (item.itemId == R.id.nav_sign_out) {
             signOut()
             openAuthActivity()
             return true
         }
 
         // Handle navigation view item clicks here.
-        mFragment = mFragmentList[item.itemId]!!.newInstance()
+        mFragment = mFragmentList[item.itemId]!!.newInstance() as Fragment?
 
         showSearchToolbar(item)
 
         supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
         // Highlight the selected item has been done by NavigationView
         item.isChecked = true
-        // Set action bar title
-        mToolbar.title = item.title
         mDrawer.closeDrawer(GravityCompat.START)
         return true
     }
 
-    fun showSearchToolbar(item: MenuItem){
+    private fun showSearchToolbar(item: MenuItem) {
+        // Set action bar title
+        mToolbar.title = item.title
+        val value =
+                when (item.itemId) {
+                    R.id.nav_notes -> {
+                        mSearchView.hintText = getString(R.string.hint_search_notes)
+                        true
+                    }
+                    R.id.nav_trash -> {
+                        mSearchView.hintText = getString(R.string.hint_search_trash)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
 
-        if (item.itemId != R.id.nav_notes && item.itemId != R.id.nav_trash) {
-            mToolbar.visibility =  View.VISIBLE
+        if (value) {
+            mToolbar.visibility = View.GONE
+            mSearchView.visibility = View.VISIBLE
+
+        } else {
+            mToolbar.visibility = View.VISIBLE
             mSearchView.visibility = View.GONE
 
             setSupportActionBar(mToolbar)
@@ -222,15 +252,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
             mDrawer.addDrawerListener(toggle)
             toggle.syncState()
-
-        } else {
-            mToolbar.visibility = View.GONE
-            mSearchView.visibility = View.VISIBLE
-            mSearchView.hintText =
-                    if (item.itemId == R.id.nav_trash) getString(R.string.hint_search_trash)
-                    else getString(R.string.hint_search_notes)
         }
 
-        mFAB.visibility = if (item.itemId == R.id.nav_settings){ View.GONE } else { View.VISIBLE }
+        mFAB.visibility = if (item.itemId == R.id.nav_settings) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
+
+
 }

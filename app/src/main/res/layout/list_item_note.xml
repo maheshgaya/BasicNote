@@ -6,8 +6,7 @@
     android:background="@null"
     android:layout_margin="@dimen/list_item_normal_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/cardview_default_radius"
-    xmlns:tools="http://schemas.android.com/tools">
+    app:cardCornerRadius="@dimen/cardview_default_radius">
     <LinearLayout
         android:orientation="vertical"
         android:background="@null"

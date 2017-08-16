@@ -37,7 +37,7 @@ class TrashFragment: Fragment() {
         return rootView
     }
 
-    fun setView(){
+    private fun setView(){
         if (mList.size == 0){ mEmptyView.visibility = View.VISIBLE; mMainView.visibility = View.GONE }
         else { mEmptyView.visibility = View.GONE; mMainView.visibility = View.VISIBLE }
     }
