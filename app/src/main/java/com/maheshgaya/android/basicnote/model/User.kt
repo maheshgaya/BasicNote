@@ -27,6 +27,7 @@ data class User(var id: String? = null, var firstName: String? = null, var lastN
         val COLUMN_LAST_NAME = "lastName"
         val COLUMN_EMAIL = "email"
         val COLUMN_IMAGE_URL = "imageUrl"
+        val COLUMN_LAST_LOGIN = "lastLogin"
 
 
         @JvmField @Suppress("unused")

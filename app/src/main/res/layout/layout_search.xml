@@ -90,7 +90,7 @@
             android:lines="1"
             android:singleLine="true"
             android:maxLines="1"
-            android:imeOptions="actionDone|actionNext"
+            android:imeOptions="actionDone|actionNext|flagNoFullscreen"
             android:textColorHint="@color/searchbox_hint_text_color"
             android:textSize="@dimen/search_box_collapsed_text_size"
             android:hint="@string/hint_search_notes"/>

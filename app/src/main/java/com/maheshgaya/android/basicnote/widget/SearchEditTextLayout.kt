@@ -1,6 +1,8 @@
 package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -20,6 +22,9 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     companion object {
         /** Tag for logging purposes */
         private val TAG = SearchEditTextLayout::class.simpleName
+        //for parcelables
+        private val EXPANDED_VIEW_ID = "expanded_view"
+        private val HINT_TEXT = "hint_text"
     }
     /** Collapsed outer layout */
     private lateinit var mCollapsedSearchBoxView: View
@@ -43,6 +48,10 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
     /** If expanded search view is active or not */
     private var mIsExpanded = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     /** Constants for search view transition */
     private val fadeIn = AlphaAnimation(0.0f, 1.0f)
@@ -51,9 +60,11 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     /** Query hint */
     var hintText:String = ""
         set(value) {
+            field = value
             //Set hint for the collapsed and expanded search view
             mExpandedSearchEditText.hint = value
             mCollapsedSearchTextView.hint = value
+            invalidate()
         }
 
 
@@ -61,6 +72,8 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     init{
         //initialize the views
         setupViews(false)
+        //save instance state
+        isSaveEnabled = true
     }
 
     /** handles onClicked for the buttons/views */
@@ -223,8 +236,55 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
     }
 
+    override fun onSaveInstanceState(): Parcelable {
+        val superState = super.onSaveInstanceState()
+
+        val ss  = SavedState(superState)
+        ss.isExpanded = mIsExpanded
+        ss.hintText = hintText
+        return ss;
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        val ss:SavedState = state as SavedState
+        super.onRestoreInstanceState(ss.superState)
+        mIsExpanded = ss.isExpanded
+        hintText = ss.hintText
+    }
+
     fun clearText() {
         mExpandedSearchEditText.text.clear()
+    }
+
+
+
+}
+
+class SavedState : View.BaseSavedState {
+    private val TAG = SavedState::class.simpleName
+    var isExpanded:Boolean = false
+    var hintText: String = ""
+
+    constructor(superState: Parcelable?) : super(superState){
+    }
+
+    constructor(parcel: Parcel):super(parcel){
+        isExpanded = parcel.readInt() == 1
+        hintText = parcel.readString()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        super.writeToParcel(parcel, flags)
+        parcel.writeInt(if(isExpanded) 1 else 0)
+        parcel.writeString(hintText)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<SavedState> {
+        override fun createFromParcel(parcel: Parcel): SavedState = SavedState(parcel)
+
+        override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
     }
 
 

@@ -31,6 +31,7 @@ import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 import com.squareup.picasso.Picasso
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val mSearchResultFragment = SearchResultFragment::class.java.newInstance()
     private var mFragment: Fragment? = null
 
-    val mFragmentList =
+    private val mFragmentList =
             mapOf(Pair(R.id.nav_settings, SettingFragment::class.java),
                     Pair(R.id.nav_trash, TrashFragment::class.java),
                     Pair(R.id.nav_notes, NoteListFragment::class.java))
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     companion object {
         private val TAG = MainActivity::class.simpleName
         private val FRAG_ID = "frag_main"
+        private val SEARCH_FRAG_ID = "search_frag"
 
     }
 
@@ -76,10 +78,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mNavigationView = bind(R.id.nav_view)
         mNavigationView.setNavigationItemSelectedListener(this)
 
+
         if (supportFragmentManager.findFragmentByTag(FRAG_ID) == null) {
             onNavigationItemSelected(mNavigationView.menu.findItem(R.id.nav_notes))
+
         } else {
-            when (supportFragmentManager.fragments[0]) {
+
+            when (supportFragmentManager.findFragmentByTag(FRAG_ID)) {
                 is NoteListFragment -> {
                     showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_notes))
                 }
@@ -90,11 +95,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_settings))
                 }
             }
+
         }
 
         setupUserProfile()
 
     }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        mSearchView.expandView(mSearchView.isExpandedView())
+        showSearchFragment(mSearchView.isExpandedView())
+    }
+
+
+
 
     override fun onClick(view: View?) {
         when (view!!.id) {
@@ -117,7 +132,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Get Post object and use the values to update the UI
                 val currentUser = dataSnapshot.getValue<User>(User::class.java)
                 val name = currentUser!!.firstName + " " + currentUser.lastName
-                Log.d(TAG, currentUser.toString())
                 userNameTextView.text = name
                 userEmailTextView.text = user.email
                 Picasso
@@ -155,45 +169,43 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onSearchViewClicked() {
         mFAB.visibility = View.GONE
-        setSearchResultView(true)
+        showSearchFragment(true)
     }
 
     override fun onBackButtonClicked() {
         mFAB.visibility = View.VISIBLE
-        setSearchResultView(false)
+        showSearchFragment(false)
     }
 
     override fun onVoiceSearchClicked() {
         Log.d(TAG, "onVoiceSearchClicked")
     }
 
-    private fun setSearchResultView(value: Boolean) {
-        val fragment: Fragment?
-        mSearchResultFragment.clearList()
-        if (value) {
-            fragment = mSearchResultFragment
-        } else {
-            fragment = mFragment
-        }
-
-
-        mSearchResultFragment.mainSearch = mFragment !is TrashFragment
-        Log.d(TAG + ":mainSearch", mSearchResultFragment.mainSearch.toString())
-        supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, fragment, FRAG_ID).commit()
-    }
 
     override fun onBackPressed() {
-        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-            mDrawer.closeDrawer(GravityCompat.START)
-        } else if (mSearchView.isExpandedView()) {
-            mSearchView.clearText()
-            mSearchView.expandView(false)
-            setSearchResultView(false)
-        } else {
-            super.onBackPressed()
+        when {
+            mDrawer.isDrawerOpen(GravityCompat.START) -> mDrawer.closeDrawer(GravityCompat.START)
+            mSearchView.isExpandedView() -> {
+                mSearchView.clearText()
+                mSearchView.expandView(false)
+            }
+            else -> super.onBackPressed()
         }
     }
 
+    private fun showSearchFragment(value: Boolean){
+        if (value){
+            if (supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID) == null) {
+                supportFragmentManager.beginTransaction()
+                        .add(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
+            }
+        } else{
+            if (supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID) != null) {
+                supportFragmentManager.beginTransaction()
+                        .remove(supportFragmentManager.findFragmentByTag(SEARCH_FRAG_ID)).commit()
+            }
+        }
+    }
 
     private fun openAuthActivity() {
         val intent = Intent(this@MainActivity, AuthActivity::class.java)
@@ -201,6 +213,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
         finish()
     }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.nav_sign_out) {
@@ -210,11 +223,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         // Handle navigation view item clicks here.
-        mFragment = mFragmentList[item.itemId]!!.newInstance() as Fragment?
+        mFragment = mFragmentList[item.itemId]!!.newInstance()
 
         showSearchToolbar(item)
 
         supportFragmentManager.beginTransaction().replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
+
         // Highlight the selected item has been done by NavigationView
         item.isChecked = true
         mDrawer.closeDrawer(GravityCompat.START)
