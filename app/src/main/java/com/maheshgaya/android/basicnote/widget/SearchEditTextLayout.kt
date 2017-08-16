@@ -3,15 +3,17 @@ package com.maheshgaya.android.basicnote.widget
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import com.maheshgaya.android.basicnote.R
-import android.text.Editable
-import android.util.Log
 import android.view.animation.AlphaAnimation
-import android.widget.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
+import com.maheshgaya.android.basicnote.R
 
 
 /**
@@ -131,6 +133,7 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
         mCollapsedDrawerMenu = findViewById(R.id.search_box_collapsed_drawer_menu)
         mCollapsedSearchTextView = findViewById(R.id.search_box_collapsed_textview)
         mCollapsedSearchVoiceView = findViewById(R.id.search_box_collapsed_voice)
+        mCollapsedSearchVoiceView.setOnClickListener(this)
 
         //currently not using this, so set visibility GONE
         mCollapsedOverflowView = findViewById(R.id.search_box_collapsed_overflow)
@@ -146,6 +149,8 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
         mExpandedBackImageView = findViewById(R.id.search_box_expanded_back)
         mExpandedSearchEditText = findViewById(R.id.search_box_expanded_edittext)
         mExpandedSearchVoiceView = findViewById(R.id.search_box_expanded_voice)
+        if (mExpandedSearchEditText.text.isEmpty())
+            mExpandedSearchVoiceView.tag = context.getString(R.string.tag_mic)
 
         //handles back for expanded views
         mExpandedBackImageView.setOnClickListener(this)
@@ -231,6 +236,10 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
                 } else {
                     clearText()
                 }
+            }
+            R.id.search_box_collapsed_voice ->{
+                mCallback?.onVoiceSearchClicked()
+
             }
         }
 

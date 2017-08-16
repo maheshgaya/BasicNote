@@ -68,6 +68,7 @@
     <string name="empty_note_list">No notes yet?! Create a new one.</string>
     <string name="no_body_text">No text</string>
     <string name="no_search_results">No search results!</string>
+    <string name="voice_search_not_available">Search by voice not available</string>
 
 
 </resources>

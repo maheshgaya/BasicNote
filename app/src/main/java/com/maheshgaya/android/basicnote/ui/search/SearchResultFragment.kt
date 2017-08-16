@@ -1,27 +1,22 @@
 package com.maheshgaya.android.basicnote.ui.search
 
-import android.content.Intent
-import android.content.IntentSender
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.adapter.NoteListAdapter
 import com.maheshgaya.android.basicnote.model.Note
 import com.maheshgaya.android.basicnote.util.bind
-import com.maheshgaya.android.basicnote.Constants
 import com.maheshgaya.android.basicnote.widget.EmptyView
 
 
@@ -37,9 +32,10 @@ class SearchResultFragment : Fragment(){
 
     var searchQuery = ""
         set(value) {
+            field = value
             mNoteList.clear()
             mNoteAdapter.notifyDataSetChanged()
-            handleQuery(value)
+            handleQuery()
         }
 
     var mainSearch = true
@@ -53,10 +49,10 @@ class SearchResultFragment : Fragment(){
         setHasOptionsMenu(true)
     }
 
-    private fun handleQuery(query: String) {
+    private fun handleQuery() {
         val databaseRef = FirebaseDatabase.getInstance()
                 .getReference( if (!mainSearch) Note.getTrashPath(mUser?.uid) else Note.getMainPath(mUser?.uid))
-        val notesQuery = databaseRef.orderByChild(Note.COLUMN_BODY).endAt(query)
+        val notesQuery = databaseRef.orderByChild(Note.COLUMN_BODY).endAt(searchQuery)
         Log.d(TAG + ":mainSearch", mainSearch.toString())
         mNoteList.clear()
         notesQuery.addChildEventListener(object : ChildEventListener{
@@ -75,8 +71,8 @@ class SearchResultFragment : Fragment(){
             override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
                 if (dataSnapshot!!.childrenCount == 0.toLong()) return
                 val note = dataSnapshot.getValue(Note::class.java)
-                if (note!!.body.toLowerCase().contains(Regex(query.toLowerCase())) ||
-                        note.title.toLowerCase().contains(Regex(query.toLowerCase()))){
+                if (note!!.body.toLowerCase().contains(Regex(searchQuery.toLowerCase())) ||
+                        note.title.toLowerCase().contains(Regex(searchQuery.toLowerCase()))){
                     Log.d(TAG, note.body + "\t" + note.title)
                     mNoteList.add(note)
                     mNoteAdapter.notifyDataSetChanged()

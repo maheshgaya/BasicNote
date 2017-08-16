@@ -1,7 +1,9 @@
 package com.maheshgaya.android.basicnote.ui.main
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -15,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,13 +28,11 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
-import com.maheshgaya.android.basicnote.ui.note.NoteFragment
 import com.maheshgaya.android.basicnote.ui.search.SearchResultFragment
 import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 import com.squareup.picasso.Picasso
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val TAG = MainActivity::class.simpleName
         private val FRAG_ID = "frag_main"
         private val SEARCH_FRAG_ID = "search_frag"
+        private val ACTIVITY_REQUEST_CODE_VOICE_SEARCH = 100
 
     }
 
@@ -179,6 +181,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onVoiceSearchClicked() {
         Log.d(TAG, "onVoiceSearchClicked")
+        try {
+            startActivityForResult(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH),
+                    ACTIVITY_REQUEST_CODE_VOICE_SEARCH)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.voice_search_not_available,
+                    Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -188,6 +197,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mSearchView.isExpandedView() -> {
                 mSearchView.clearText()
                 mSearchView.expandView(false)
+                showSearchFragment(false)
             }
             else -> super.onBackPressed()
         }
