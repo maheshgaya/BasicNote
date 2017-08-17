@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="pref_key_general_setting"
+        android:title="@string/general_setting">
+        <ListPreference
+            android:key="pref_key_sort"
+            android:title="@string/sortby"
+            android:summary="%s"
+            android:entries="@array/entries_sortby"
+            android:entryValues="@array/entryvalue_sortby"
+            android:defaultValue="@string/pref_sort_default"
+            android:dialogTitle="@string/sortby" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_user_account"
+        android:title="@string/user_account">
+        <Preference
+            android:key="pref_key_profile_activity"
+            android:summary="@string/profile_summary"
+            android:title="@string/profile"/>
+        <Preference
+            android:key="pref_key_sign_out"
+            android:title="@string/sign_out"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

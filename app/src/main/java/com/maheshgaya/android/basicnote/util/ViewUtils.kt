@@ -1,10 +1,12 @@
 package com.maheshgaya.android.basicnote.util
 
 import android.app.Activity
+import android.content.Intent
 import android.support.annotation.IdRes
 import android.text.Html
 import android.text.Spanned
 import android.view.View
+import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 
 /**
  * Created by Mahesh Gaya on 8/14/17.
@@ -48,4 +50,11 @@ fun toHtml(span: Spanned): String {
         result = Html.toHtml(span)
     }
     return result
+}
+
+ fun openAuthActivity(activity: Activity) {
+     val intent = Intent(activity, AuthActivity::class.java)
+     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+     activity.startActivity(intent)
+     activity.finish()
 }

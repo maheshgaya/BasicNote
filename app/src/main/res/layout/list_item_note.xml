@@ -29,14 +29,10 @@
             android:singleLine="true"
             android:gravity="start"
             android:textSize="@dimen/small_text_size"
+            android:paddingBottom="@dimen/small_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <View
-            android:layout_marginTop="@dimen/small_padding"
-            android:layout_marginBottom="@dimen/small_padding"
-            android:background="@color/note_list_item_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+
 
         <TextView
             android:id="@+id/item_note_body"

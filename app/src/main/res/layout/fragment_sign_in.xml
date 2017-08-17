@@ -37,6 +37,7 @@
                     android:id="@+id/auth_email_textedittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="flagNoFullscreen"
                     android:hint="@string/hint_email"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
@@ -53,6 +54,7 @@
                     android:id="@+id/auth_password_textedittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="flagNoFullscreen"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>

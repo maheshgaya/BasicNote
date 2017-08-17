@@ -1,6 +1,7 @@
 package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Editable

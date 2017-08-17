@@ -17,4 +17,5 @@
     <color name="note_list_item_divider">#f3f3f3</color>
     <color name="note_editor_menu_bg_color">#f3f3f3</color>
     <color name="note_editor_menu_bg_color_dark">#d4d4d4</color>
+    <color name="translucent">#c2000000</color>
 </resources>

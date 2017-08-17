@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/side_nav_bar"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:id="@+id/nav_header_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height">
 
-    <android.support.v7.widget.CardView
-        app:cardCornerRadius="36dp"
-        android:layout_width="72dp"
-        android:layout_height="72dp">
-        <ImageView
-            android:scaleType="center"
-            android:id="@+id/drawer_user_imageview"
-            android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/nav_background_imageview"
+        android:tint="@color/translucent"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_header_height"
+        android:background="@null"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:cardCornerRadius="36dp">
+
+            <ImageView
+                android:id="@+id/drawer_user_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/description_app_image"
+                android:scaleType="center"
+                app:srcCompat="@android:drawable/sym_def_app_icon" />
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/drawer_user_name_textview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:contentDescription="@string/description_app_image"
-            app:srcCompat="@android:drawable/sym_def_app_icon" />
-    </android.support.v7.widget.CardView>
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="Android Studio" />
 
+        <TextView
+            android:id="@+id/drawer_user_email_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="android.studio@android.com" />
 
-    <TextView
-        android:id="@+id/drawer_user_name_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        tools:text="Android Studio"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-    <TextView
-        android:id="@+id/drawer_user_email_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="android.studio@android.com" />
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

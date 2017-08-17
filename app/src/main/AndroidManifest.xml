@@ -37,7 +37,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.MainActivity" />
         </activity>
-        <activity android:name=".ui.profile.ProfileActivity">
+        <activity android:name=".ui.profile.ProfileActivity"
+            android:label="@string/profile"
+            android:parentActivityName=".ui.main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
         </activity>
     </application>
 

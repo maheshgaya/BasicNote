@@ -2,7 +2,12 @@ package com.maheshgaya.android.basicnote.ui.main
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.os.AsyncTask
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.speech.RecognizerIntent
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
@@ -15,9 +20,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,11 +31,12 @@ import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
+import com.maheshgaya.android.basicnote.ui.profile.ProfileActivity
 import com.maheshgaya.android.basicnote.ui.search.SearchResultFragment
 import com.maheshgaya.android.basicnote.util.bind
-import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -43,6 +47,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var mSearchView: SearchEditTextLayout
     private lateinit var mToolbar: Toolbar
+
+    private lateinit var mHeaderImageView:ImageView
 
     private lateinit var mFAB: FloatingActionButton
 
@@ -62,6 +68,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val FRAG_ID = "frag_main"
         private val SEARCH_FRAG_ID = "search_frag"
         private val ACTIVITY_REQUEST_CODE_VOICE_SEARCH = 100
+        private val SAVED_FRAG = "saved_frag"
 
     }
 
@@ -70,7 +77,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
         mDrawer = bind(R.id.drawer_layout)
-
         mSearchView = bind(R.id.search_edittextlayout)
         mSearchView.setCallback(this)
         mToolbar = bind(R.id.toolbar)
@@ -80,25 +86,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mNavigationView = bind(R.id.nav_view)
         mNavigationView.setNavigationItemSelectedListener(this)
 
-
         if (supportFragmentManager.findFragmentByTag(FRAG_ID) == null) {
             onNavigationItemSelected(mNavigationView.menu.findItem(R.id.nav_notes))
-
         } else {
 
-            when (supportFragmentManager.findFragmentByTag(FRAG_ID)) {
-                is NoteListFragment -> {
-                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_notes))
-                }
-                is TrashFragment -> {
-                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_trash))
-                }
-                is SettingFragment -> {
-                    showSearchToolbar(mNavigationView.menu.findItem(R.id.nav_settings))
-                }
-            }
+            mFragment = supportFragmentManager.findFragmentByTag(FRAG_ID)
+            showSearchToolbar(mNavigationView.menu.findItem(
+                    getFragmentId(mFragment)))
 
         }
+
 
         setupUserProfile()
 
@@ -106,11 +103,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        mSearchView.expandView(mSearchView.isExpandedView())
-        showSearchFragment(mSearchView.isExpandedView())
+        //searchEditTextLayout state is restored first
+        //then show search fragment if searchEditTextLayout is expanded
+        val value = mSearchView.isExpandedView()
+        mSearchView.expandView(value)
+        mFAB.visibility = if (value) View.GONE else View.VISIBLE
+        showSearchFragment(value)
+        mSearchResultFragment.mainSearch =
+                mFragment !is TrashFragment
+        Log.d(TAG, "mainSearch=" + mSearchResultFragment.mainSearch.toString())
     }
 
 
+    private fun getFragmentId(fragment: Fragment?): Int =
+            when (fragment) {
+                is TrashFragment -> {
+                    R.id.nav_trash
+                }
+                is SettingFragment -> {
+                    R.id.nav_settings
+                }
+                else -> {
+                    R.id.nav_notes
+                }
+            }
 
 
     override fun onClick(view: View?) {
@@ -125,7 +141,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val userNameTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_textview)
         val userEmailTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_textview)
         val userImageView: ImageView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_imageview)
+        mHeaderImageView = mNavigationView.getHeaderView(0).findViewById(R.id.nav_background_imageview)
         val user = mAuth.currentUser
+        
+        val header = mNavigationView.getHeaderView(0)
+        header.setOnClickListener {
+            startActivity(Intent(applicationContext, ProfileActivity::class.java))
+        }
 
 
         val ref = mDatabase.getReference(Constants.USER_TABLE + "/" + user!!.uid)
@@ -142,6 +164,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .placeholder(android.R.drawable.sym_def_app_icon)
                         .error(android.R.drawable.sym_def_app_icon)
                         .into(userImageView)
+
+                Picasso
+                        .with(this@MainActivity)
+                        .load(currentUser.imageUrl)
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .error(android.R.drawable.sym_def_app_icon)
+                        .into(mHeaderImageView)
+
 
             }
 
@@ -168,6 +198,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
         mSearchResultFragment.searchQuery = text.toString()
     }
+
 
     override fun onSearchViewClicked() {
         mFAB.visibility = View.GONE
@@ -203,20 +234,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun showSearchFragment(value: Boolean){
-        if (value){
+    private fun showSearchFragment(value: Boolean) {
+        if (supportFragmentManager.isDestroyed) return
+        if (value) {
+
+            Log.d(TAG, "Search attached")
             supportFragmentManager.beginTransaction()
                     .replace(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
+
             mSearchResultFragment.clearList()
-            mSearchResultFragment.mainSearch =
-                    supportFragmentManager.findFragmentByTag(FRAG_ID) !is TrashFragment
-        } else{
+        } else {
+
+            Log.d(TAG, "main replaced")
             supportFragmentManager.beginTransaction()
                     .replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
 
         }
+
+
     }
 
+    @Deprecated("unused")
     private fun openAuthActivity() {
         val intent = Intent(this@MainActivity, AuthActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -226,12 +264,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_sign_out) {
-            signOut()
-            openAuthActivity()
-            return true
-        }
-
         // Handle navigation view item clicks here.
         mFragment = mFragmentList[item.itemId]!!.newInstance()
 
@@ -284,6 +316,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             View.VISIBLE
         }
     }
+
 
 
 }

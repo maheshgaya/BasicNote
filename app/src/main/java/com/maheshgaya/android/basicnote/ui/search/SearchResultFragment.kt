@@ -23,12 +23,13 @@ import com.maheshgaya.android.basicnote.widget.EmptyView
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class SearchResultFragment : Fragment(){
+class SearchResultFragment : Fragment() {
+
     private var mNoteList = mutableListOf<Note>()
     private var mNoteAdapter = NoteListAdapter(null, mNoteList)
     private lateinit var mNoteRecyclerView: RecyclerView
     private lateinit var mEmptyView:EmptyView
-    private lateinit var mMainView:View
+    lateinit var mMainView:View
 
     var searchQuery = ""
         set(value) {
@@ -36,6 +37,7 @@ class SearchResultFragment : Fragment(){
             mNoteList.clear()
             mNoteAdapter.notifyDataSetChanged()
             handleQuery()
+            Log.d(TAG, searchQuery)
         }
 
     var mainSearch = true
@@ -106,8 +108,8 @@ class SearchResultFragment : Fragment(){
             Log.e(TAG, e.stackTrace.toString())
         }
 
-
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

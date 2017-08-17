@@ -43,6 +43,7 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
     private val mDatabaseRef = FirebaseDatabase.getInstance()
             .getReference(Note.getMainPath(mUser?.uid)).orderByKey()
     init {
+        retainInstance = true
         mDatabaseRef.keepSynced(true)
     }
 

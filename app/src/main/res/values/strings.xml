@@ -70,5 +70,27 @@
     <string name="no_search_results">No search results!</string>
     <string name="voice_search_not_available">Search by voice not available</string>
 
+    <string name="user_account">User Account</string>
+    <string name="profile">Profile</string>
+    <string name="profile_summary">Edit your profile</string>
+    <string name="sign_out">Sign out</string>
+
+    <string name="pref_key_profile_activity" translatable="false">pref_key_profile_activity</string>
+    <string name="pref_key_sign_out" translatable="false">pref_key_sign_out</string>
+    <string name="pref_key_general_setting" translatable="false">pref_key_general_setting</string>
+    <string name="general_setting">General Setting</string>
+    <string name="pref_key_sort" translatable="false">pref_key_sort</string>
+    <string name="sortby">Sort notes by</string>
+    <string name="pref_sort_default" translatable="false">@string/sort_by_last_edited</string>
+    <string name="sort_by_last_edited" translatable="false">sort_by_last_edited</string>
+    <string name="sort_by_last_edited_label">Last Edited</string>
+    <string name="sort_by_title" translatable="false">sort_by_title</string>
+    <string name="sort_by_title_label" >Title</string>
+    <string name="action_save">Save</string>
+    <string name="action_sign_out">Sign out</string>
+    <string name="email_error">Not a valid email</string>
+    <string name="successfully_saved">Successfully saved!</string>
+    <string name="unsuccessfully_saved">Could not save request</string>
+
 
 </resources>
