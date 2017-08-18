@@ -1,7 +1,6 @@
 package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Editable
@@ -160,7 +159,7 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 //change the icons accordingly, set `mic` or `clear text`
                 mExpandedSearchVoiceView.setImageResource(
-                        if (text.isEmpty()) R.drawable.ic_search_box_mic else R.drawable.ic_close)
+                        if (text.isEmpty()) R.drawable.ic_search_box_mic else R.drawable.ic_close_outline)
                 mExpandedSearchVoiceView.tag =
                         if (text.isEmpty()) context.getString(R.string.tag_mic)
                         else context.getString(R.string.tag_close)
@@ -267,35 +266,36 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
     }
 
 
+    class SavedState : View.BaseSavedState {
+        private val TAG = SavedState::class.simpleName
+        var isExpanded:Boolean = false
+        var hintText: String = ""
+
+        constructor(superState: Parcelable?) : super(superState){
+        }
+
+        constructor(parcel: Parcel):super(parcel){
+            isExpanded = parcel.readInt() == 1
+            hintText = parcel.readString()
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            super.writeToParcel(parcel, flags)
+            parcel.writeInt(if(isExpanded) 1 else 0)
+            parcel.writeString(hintText)
+        }
+
+        override fun describeContents(): Int = 0
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel): SavedState = SavedState(parcel)
+
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+        }
+
+
+    }
 
 }
 
-class SavedState : View.BaseSavedState {
-    private val TAG = SavedState::class.simpleName
-    var isExpanded:Boolean = false
-    var hintText: String = ""
 
-    constructor(superState: Parcelable?) : super(superState){
-    }
-
-    constructor(parcel: Parcel):super(parcel){
-        isExpanded = parcel.readInt() == 1
-        hintText = parcel.readString()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        super.writeToParcel(parcel, flags)
-        parcel.writeInt(if(isExpanded) 1 else 0)
-        parcel.writeString(hintText)
-    }
-
-    override fun describeContents(): Int = 0
-
-    companion object CREATOR : Parcelable.Creator<SavedState> {
-        override fun createFromParcel(parcel: Parcel): SavedState = SavedState(parcel)
-
-        override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
-    }
-
-
-}

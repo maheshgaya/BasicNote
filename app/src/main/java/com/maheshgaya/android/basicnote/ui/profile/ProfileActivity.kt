@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.maheshgaya.android.basicnote.R
-import com.maheshgaya.android.basicnote.ui.note.NoteActivity
 import com.maheshgaya.android.basicnote.util.bind
 
 /**
@@ -20,5 +19,7 @@ class ProfileActivity: AppCompatActivity() {
         supportActionBar!!.setDefaultDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout_profile, ProfileFragment::class.java.newInstance()).commit()
     }
 }

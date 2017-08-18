@@ -1,16 +1,14 @@
 package com.maheshgaya.android.basicnote.ui.main
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.speech.RecognizerIntent
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -20,7 +18,8 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,14 +28,14 @@ import com.google.firebase.database.ValueEventListener
 import com.maheshgaya.android.basicnote.Constants
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
-import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteActivity
 import com.maheshgaya.android.basicnote.ui.profile.ProfileActivity
 import com.maheshgaya.android.basicnote.ui.search.SearchResultFragment
 import com.maheshgaya.android.basicnote.util.bind
+import com.maheshgaya.android.basicnote.util.isOnline
+import com.maheshgaya.android.basicnote.util.showSnackbar
 import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -48,12 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mSearchView: SearchEditTextLayout
     private lateinit var mToolbar: Toolbar
 
-    private lateinit var mHeaderImageView:ImageView
-
     private lateinit var mFAB: FloatingActionButton
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mDatabase = FirebaseDatabase.getInstance()
+    private lateinit var mCoordinatorLayout:CoordinatorLayout
 
     private val mSearchResultFragment = SearchResultFragment::class.java.newInstance()
     private var mFragment: Fragment? = null
@@ -83,6 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mToolbar.visibility = View.GONE
         mFAB = bind(R.id.fab_main)
         mFAB.setOnClickListener(this)
+        mCoordinatorLayout = bind(R.id.coordinator)
         mNavigationView = bind(R.id.nav_view)
         mNavigationView.setNavigationItemSelectedListener(this)
 
@@ -95,8 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     getFragmentId(mFragment)))
 
         }
-
-
+        if (!isOnline()) mCoordinatorLayout.showSnackbar(getString(R.string.offline))
         setupUserProfile()
 
     }
@@ -132,7 +130,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onClick(view: View?) {
         when (view!!.id) {
             R.id.fab_main -> {
-                startActivity(Intent(this@MainActivity, NoteActivity::class.java))
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view,
+                        getString(R.string.item_note_transition))
+                startActivity(Intent(this@MainActivity, NoteActivity::class.java), options.toBundle())
             }
         }
     }
@@ -141,15 +141,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val userNameTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_textview)
         val userEmailTextView: TextView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_textview)
         val userImageView: ImageView = mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_imageview)
-        mHeaderImageView = mNavigationView.getHeaderView(0).findViewById(R.id.nav_background_imageview)
+        val userHeaderImageView:ImageView = mNavigationView.getHeaderView(0).findViewById(R.id.nav_background_imageview)
+        val userHeader:View = mNavigationView.getHeaderView(0).findViewById(R.id.nav_header_layout)
         val user = mAuth.currentUser
-        
-        val header = mNavigationView.getHeaderView(0)
-        header.setOnClickListener {
-            startActivity(Intent(applicationContext, ProfileActivity::class.java))
-        }
 
-
+        userHeader.setOnClickListener({
+            val options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, it, getString(R.string.transition_profile))
+            startActivity(Intent(this, ProfileActivity::class.java), options.toBundle())
+        })
         val ref = mDatabase.getReference(Constants.USER_TABLE + "/" + user!!.uid)
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .load(currentUser.imageUrl)
                         .placeholder(android.R.drawable.sym_def_app_icon)
                         .error(android.R.drawable.sym_def_app_icon)
-                        .into(mHeaderImageView)
+                        .into(userHeaderImageView)
 
 
             }
@@ -202,6 +202,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onSearchViewClicked() {
         mFAB.visibility = View.GONE
+        mSearchResultFragment.mainSearch = mFragment !is TrashFragment
         showSearchFragment(true)
     }
 
@@ -216,8 +217,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivityForResult(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH),
                     ACTIVITY_REQUEST_CODE_VOICE_SEARCH)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, R.string.voice_search_not_available,
-                    Toast.LENGTH_SHORT).show()
+            mCoordinatorLayout.showSnackbar(getString(R.string.voice_search_not_available))
         }
     }
 
@@ -240,6 +240,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             Log.d(TAG, "Search attached")
             supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
 
             mSearchResultFragment.clearList()
@@ -247,21 +248,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             Log.d(TAG, "main replaced")
             supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()
 
         }
 
 
     }
-
-    @Deprecated("unused")
-    private fun openAuthActivity() {
-        val intent = Intent(this@MainActivity, AuthActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        finish()
-    }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.

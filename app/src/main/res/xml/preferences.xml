@@ -19,6 +19,7 @@
         android:key="pref_key_user_account"
         android:title="@string/user_account">
         <Preference
+            android:transitionName="@string/transition_profile"
             android:key="pref_key_profile_activity"
             android:summary="@string/profile_summary"
             android:title="@string/profile"/>

@@ -2,7 +2,10 @@ package com.maheshgaya.android.basicnote.util
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import android.support.annotation.ColorInt
 import android.support.annotation.IdRes
+import android.support.design.widget.Snackbar
 import android.text.Html
 import android.text.Spanned
 import android.view.View
@@ -26,15 +29,13 @@ fun <T : View> View.bind(@IdRes res: Int): T = this.findViewById(res)
  * @param html HTML in String format
  * @return html in Spanned format
  */
-fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
-    val result: Spanned
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        result = Html.fromHtml(html, mode)
+fun String.fromHtml(mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        Html.fromHtml(this, mode)
     } else {
-        result = Html.fromHtml(html)
+        Html.fromHtml(this)
     }
 
-    return result
 }
 
 /**
@@ -42,19 +43,33 @@ fun fromHtml(html: String, mode: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
  * @param span HTML in Spanned format
  * @return html in String format
  */
-fun toHtml(span: Spanned): String {
-    val result: String
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        result = Html.toHtml(span, Html.FROM_HTML_MODE_LEGACY)
+fun Spanned.toHtml(): String {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        Html.toHtml(this, Html.FROM_HTML_MODE_LEGACY)
     } else {
-        result = Html.toHtml(span)
+        Html.toHtml(this)
     }
-    return result
 }
 
- fun openAuthActivity(activity: Activity) {
-     val intent = Intent(activity, AuthActivity::class.java)
+ fun Activity.openAuthActivity() {
+     val intent = Intent(this, AuthActivity::class.java)
      intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-     activity.startActivity(intent)
-     activity.finish()
+     startActivity(intent)
+     finish()
+}
+
+fun View.showSnackbar(message:String,
+                      duration:Int = Snackbar.LENGTH_SHORT, @ColorInt color: Int = android.R.color.white){
+    var time = Snackbar.LENGTH_SHORT
+
+    if (duration == Snackbar.LENGTH_LONG || duration == Snackbar.LENGTH_INDEFINITE) {
+        time = duration
+    }
+    val colorRes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.context.getColor(color)
+    } else {
+        this.context.resources.getColor(color)
+    }
+    Snackbar.make(this, message, time).setActionTextColor(colorRes) .show()
+
 }

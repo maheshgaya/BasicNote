@@ -2,6 +2,7 @@ package com.maheshgaya.android.basicnote.ui.note
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
@@ -13,15 +14,11 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.Note
-import com.maheshgaya.android.basicnote.util.bind
-import com.maheshgaya.android.basicnote.util.fromHtml
-import com.maheshgaya.android.basicnote.util.toLastedEditedDate
-import com.maheshgaya.android.basicnote.util.toHtml
+import com.maheshgaya.android.basicnote.util.*
 import com.maheshgaya.android.basicnote.widget.NoteEditText
 import com.maheshgaya.android.basicnote.widget.NoteEditorMenu
 
@@ -41,6 +38,8 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     private lateinit var mEditorMenu: NoteEditorMenu
     /** last edited textview */
     private lateinit var mLastEditedTextView: TextView
+
+    private lateinit var mCoordinatorLayout:CoordinatorLayout
 
     //Firebase variables
     /** get instance of the FirebaseAuth */
@@ -76,7 +75,6 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         val rootView = inflater!!.inflate(R.layout.fragment_note, container, false)
         mTitleEditText = rootView.findViewById(R.id.note_title_edittext)
         mBodyEditText = rootView.findViewById(R.id.note_body_edittext)
-        mBodyEditText.requestFocus()
         mBodyEditText.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(text: Editable?) {
                 mHasEdited = true
@@ -128,7 +126,13 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         mEditorMenu = activity.findViewById(R.id.note_editor_menu)
         mEditorMenu.setCallback(this)
         mLastEditedTextView = activity.findViewById(R.id.last_edited_textview)
+        mCoordinatorLayout = activity.findViewById(R.id.coordinator)
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (mBodyEditText.text.isEmpty())  mBodyEditText.requestFocus()
     }
 
     /**
@@ -177,8 +181,8 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     }
 
     private fun updateUI() {
-        mTitleEditText.setText(fromHtml(mNote.title).trim())
-        mBodyEditText.setText(fromHtml(mNote.body).trim())
+        mTitleEditText.setText(mNote.title.fromHtml().trim())
+        mBodyEditText.setText(mNote.body.fromHtml().trim())
         mLastEditedTextView.text = mNote.lastEdited.toLastedEditedDate(context)
         mHasEdited = false
         Log.d(TAG + ":updateUI", mHasEdited.toString())
@@ -200,6 +204,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
                 true
             }
             android.R.id.home -> {
+                activity.supportFinishAfterTransition()
                 activity.onBackPressed()
                 true
             }
@@ -209,13 +214,15 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
 
         }
 
+
+
     /**
      * Save to main notes sub tree
      */
     private fun saveToDatabase(){
         clearComposingText()
         if (mBodyEditText.text.isEmpty() && mTitleEditText.text.isEmpty() && mKey.isEmpty()) {
-            Toast.makeText(context, getString(R.string.empty_note_not_saved), Toast.LENGTH_SHORT).show()
+            mCoordinatorLayout.showSnackbar(getString(R.string.empty_note_not_saved))
             return
         }
         //notes/{uid}/main
@@ -226,10 +233,10 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         }
 
         //if title is empty then untitled
-        val title = if (mTitleEditText.text.isEmpty()) getString(R.string.untitled) else toHtml(mTitleEditText.text)
+        val title = if (mTitleEditText.text.isEmpty()) getString(R.string.untitled) else mTitleEditText.text.toHtml()
         //create a new note object
         mNote = Note(id = mKey, uid = mUser?.uid, title = title,
-                body = toHtml(mBodyEditText.text))
+                body = mBodyEditText.text.toHtml())
         //append to user ref and create a new note to the database
         mDatabase.getReference(userRef + "/" + mKey).setValue(mNote)
         mLastEditedTextView.text = mNote.lastEdited.toLastedEditedDate(context)

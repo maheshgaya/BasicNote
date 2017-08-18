@@ -1,7 +1,7 @@
 package com.maheshgaya.android.basicnote.ui.auth
 
-import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseAuth
@@ -20,8 +19,9 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
-import com.maheshgaya.android.basicnote.ui.main.MainActivity
 import com.maheshgaya.android.basicnote.util.bind
+import com.maheshgaya.android.basicnote.util.isOnline
+import com.maheshgaya.android.basicnote.util.showSnackbar
 
 /**
  * Created by Mahesh Gaya on 8/12/17.
@@ -42,6 +42,7 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
     private lateinit var mFirstNameTextEditText: TextInputEditText
     private lateinit var mLastNameTextInputLayout: TextInputLayout
     private lateinit var mLastNameTextEditText: TextInputEditText
+    private lateinit var mCoordinatorLayout:CoordinatorLayout
 
     private val mFirebaseAuth = FirebaseAuth.getInstance()
 
@@ -92,6 +93,12 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
         updateUI(user)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mCoordinatorLayout = activity.findViewById(R.id.coordinator)
+        if (!activity.isOnline()) mCoordinatorLayout.showSnackbar(getString(R.string.offline))
+    }
+
     override fun createAccount(email: String, password: String) {
         if (!validateInput()) return
         mFirebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -108,7 +115,7 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
                         val thisUser = User(user.uid, mFirstNameTextEditText.text.toString(),
                                 mLastNameTextEditText.text.toString(), user.email)
                         ref.setValue(thisUser)
-                        Toast.makeText(context, getString(R.string.account_successfully_created), Toast.LENGTH_SHORT).show()
+                        mCoordinatorLayout.showSnackbar(getString(R.string.account_successfully_created))
                         val profileUpdate = UserProfileChangeRequest.Builder()
                                 .setDisplayName(thisUser.firstName + " " + thisUser.lastName).build()
                         mFirebaseAuth.currentUser!!.updateProfile(profileUpdate)
@@ -116,8 +123,7 @@ class SignUpFragment: Fragment(), View.OnClickListener, IAuth.SignUp {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(context, getString(R.string.auth_failed),
-                                Toast.LENGTH_SHORT).show()
+                        mCoordinatorLayout.showSnackbar(getString(R.string.auth_failed))
                         updateUI(null)
                     }
 

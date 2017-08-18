@@ -30,4 +30,5 @@
     <dimen name="small_padding">4dp</dimen>
     <dimen name="empty_bottom_margin">48dp</dimen>
     <dimen name="small_text_size">12sp</dimen>
+    <dimen name="offset_padding">4dp</dimen>
 </resources>

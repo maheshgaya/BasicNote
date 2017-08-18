@@ -91,6 +91,9 @@
     <string name="email_error">Not a valid email</string>
     <string name="successfully_saved">Successfully saved!</string>
     <string name="unsuccessfully_saved">Could not save request</string>
+    <string name="item_note_transition" translatable="false">item_note</string>
+    <string name="transition_profile">transition_profile</string>
+    <string name="offline">Internet connection unavailable!</string>
 
 
 </resources>

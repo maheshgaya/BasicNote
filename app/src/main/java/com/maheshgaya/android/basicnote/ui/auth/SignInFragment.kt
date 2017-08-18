@@ -1,7 +1,7 @@
 package com.maheshgaya.android.basicnote.ui.auth
 
-import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
@@ -11,13 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.maheshgaya.android.basicnote.R
-import com.maheshgaya.android.basicnote.ui.main.MainActivity
 import com.maheshgaya.android.basicnote.util.bind
+import com.maheshgaya.android.basicnote.util.isOnline
+import com.maheshgaya.android.basicnote.util.showSnackbar
 
 
 /**
@@ -36,6 +36,7 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
     private lateinit var mEmailTextEditText: TextInputEditText
     private lateinit var mPasswordTextInputLayout: TextInputLayout
     private lateinit var mPasswordTextEditText: TextInputEditText
+    private lateinit var mCoordinatorLayout: CoordinatorLayout
 
     private val mFirebaseAuth = FirebaseAuth.getInstance()
 
@@ -107,6 +108,12 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
         return valid
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mCoordinatorLayout = activity.findViewById(R.id.coordinator)
+        if (!activity.isOnline()) mCoordinatorLayout.showSnackbar(getString(R.string.offline))
+    }
+
     override fun signIn(email: String, password: String) {
         if (!validateInput()) return
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
@@ -119,12 +126,10 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException())
-                        Toast.makeText(context, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show()
+                        mCoordinatorLayout.showSnackbar(getString(R.string.auth_failed))
                         updateUI(null)
                     }
 
-                    // ...
                 }
     }
 

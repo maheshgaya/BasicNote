@@ -7,7 +7,6 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.maheshgaya.android.basicnote.R
-import com.maheshgaya.android.basicnote.ui.auth.AuthActivity
 import com.maheshgaya.android.basicnote.ui.profile.ProfileActivity
 import com.maheshgaya.android.basicnote.util.openAuthActivity
 import com.maheshgaya.android.basicnote.util.signOut
@@ -43,7 +42,7 @@ class SettingFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             }
             getString(R.string.pref_key_sign_out) -> {
                 signOut()
-                openAuthActivity(activity)
+                activity.openAuthActivity()
                 true
             }
             else -> {

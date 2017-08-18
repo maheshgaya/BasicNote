@@ -3,6 +3,7 @@ package com.maheshgaya.android.basicnote.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
@@ -15,7 +16,7 @@ import com.maheshgaya.android.basicnote.ui.note.NoteActivity
 import com.maheshgaya.android.basicnote.ui.note.NoteFragment
 import com.maheshgaya.android.basicnote.util.fromHtml
 import com.maheshgaya.android.basicnote.util.toDate
-import com.maheshgaya.android.basicnote.util.toLastedEditedDate
+
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
@@ -70,7 +71,9 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
                 val intent = Intent(mContext as Activity, NoteActivity::class.java)
                 val position= view.tag as Int
                 intent.putExtra(NoteFragment.NOTE_KEY, mList[position])
-                mContext!!.startActivity(intent)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity, view,
+                        mContext?.getString(R.string.item_note_transition))
+                mContext!!.startActivity(intent, options.toBundle())
 
             }
         }
@@ -96,8 +99,8 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
          * @param note Note model
          */
         fun setNote(note: Note){
-            noteTitleTextView.text = fromHtml(note.title, mode = Html.FROM_HTML_MODE_COMPACT).trim()
-            val body = fromHtml(note.body).trim()
+            noteTitleTextView.text = note.title.fromHtml(mode = Html.FROM_HTML_MODE_COMPACT).trim()
+            val body = note.body.fromHtml().trim()
             noteBodyTextView.text = body
             noteBodyTextView.hint = if (body.isEmpty()) mContext?.getString(R.string.no_body_text) else ""
             lastEditedTextView.text = note.lastEdited.toDate(context = context)

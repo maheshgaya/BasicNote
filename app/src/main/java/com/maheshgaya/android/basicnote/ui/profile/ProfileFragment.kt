@@ -1,16 +1,12 @@
 package com.maheshgaya.android.basicnote.ui.profile
 
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,135 +14,170 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
-import com.maheshgaya.android.basicnote.util.bind
 import com.maheshgaya.android.basicnote.util.openAuthActivity
+import com.maheshgaya.android.basicnote.util.showSnackbar
 import com.maheshgaya.android.basicnote.util.signOut
 import com.maheshgaya.android.basicnote.util.validateEmail
 import com.squareup.picasso.Picasso
-import java.lang.Exception
 
 /**
  * Created by Mahesh Gaya on 8/16/17.
  */
-class ProfileFragment:Fragment(), View.OnClickListener {
+class ProfileFragment : Fragment(), View.OnClickListener {
 
     companion object {
         private val TAG = ProfileFragment::class.simpleName
     }
+
     private val mAuth = FirebaseAuth.getInstance()
-    private var mUser:User? = null
+    private var mUser: User? = null
     private val mDatabaseRef = FirebaseDatabase.getInstance()
             .getReference(User.TABLE_NAME + "/" + mAuth.currentUser!!.uid)
 
-    private val mDatabase = mDatabaseRef
-            .addValueEventListener(object : ValueEventListener{
-                override fun onCancelled(error: DatabaseError?) {
-                }
+    private val mDatabaseValueListener = object : ValueEventListener {
+        override fun onCancelled(error: DatabaseError?) {
+        }
 
-                override fun onDataChange(snapshot: DataSnapshot?) {
-                    mUser = snapshot?.getValue(User::class.java)
-                    setupViews()
-                }
+        override fun onDataChange(snapshot: DataSnapshot?) {
+            mUser = snapshot?.getValue(User::class.java)
+            setupViews()
+        }
 
-            })
+    }
 
-    private lateinit var mImageView:ImageView
-    private lateinit var mLastNameEditTextInput: TextInputEditText
-    private lateinit var mLastNameTextLayout: TextInputLayout
-    private lateinit var mFirstNameEditTextInput: TextInputEditText
-    private lateinit var mFirstNameTextLayout: TextInputLayout
-    private lateinit var mEmailEditTextInput: TextInputEditText
-    private lateinit var mEmailTextLayout: TextInputLayout
+    private lateinit var mImageView: ImageView
+    private lateinit var mLastNameEditText: EditText
+    private lateinit var mFirstNameEditText: EditText
+    private lateinit var mEmailEditText: EditText
+    private lateinit var mBackgroundImageView: ImageView
+    private lateinit var mCoordinatorLayout: CoordinatorLayout
 
 
     init {
         setHasOptionsMenu(true)
         mDatabaseRef.keepSynced(true)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mDatabaseRef.addValueEventListener(mDatabaseValueListener)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater!!.inflate(R.layout.fragment_profile, container, false)
-        mImageView = rootView.bind(R.id.user_imageview)
-        mLastNameEditTextInput = rootView.bind(R.id.user_lastname_textedittext)
-        mLastNameTextLayout = rootView.bind(R.id.user_lastname_textinputlayout)
-        mFirstNameEditTextInput = rootView.bind(R.id.user_firstname_textedittext)
-        mFirstNameTextLayout = rootView.bind(R.id.user_firstname_textinputlayout)
-        mEmailEditTextInput = rootView.bind(R.id.user_email_textedittext)
-        mEmailTextLayout = rootView.bind(R.id.user_email_textinputlayout)
+        val rootView = inflater?.inflate(R.layout.fragment_profile, container, false)
+        mLastNameEditText = rootView!!.findViewById(R.id.user_lastname_textedittext)
+        mFirstNameEditText = rootView.findViewById(R.id.user_firstname_textedittext)
+        mEmailEditText = rootView.findViewById(R.id.user_email_textedittext)
+
+        mImageView = rootView.findViewById(R.id.user_imageview)
+        mBackgroundImageView = rootView.findViewById(R.id.profile_background_imageview)
         mImageView.setOnClickListener(this)
         return rootView
     }
 
-    fun setupViews(){
+    override fun onPause() {
+        super.onPause()
+        mDatabaseRef.removeEventListener(mDatabaseValueListener)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mCoordinatorLayout = activity.findViewById(R.id.coordinator)
+    }
+
+    private fun setupViews() {
+
         if (mUser == null) return
-        mLastNameEditTextInput.setText(mUser?.lastName)
-        mFirstNameEditTextInput.setText(mUser?.firstName)
-        mEmailEditTextInput.setText(mUser?.email)
+        val lastName = mUser?.lastName ?: ""
+        val firstName = mUser?.firstName ?: ""
+        val email = mUser?.email ?: ""
+
+        mLastNameEditText.setText(lastName)
+        mFirstNameEditText.setText(firstName)
+        mEmailEditText.setText(email)
+
+        val image = mUser?.imageUrl ?: ""
         Picasso
                 .with(activity)
-                .load(mUser?.imageUrl)
+                .load(image)
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
                 .into(mImageView)
+        Picasso
+                .with(activity)
+                .load(image)
+                .placeholder(android.R.drawable.sym_def_app_icon)
+                .error(android.R.drawable.sym_def_app_icon)
+                .into(mBackgroundImageView)
+
     }
 
-    private fun updateImage(){
+    private fun updateImage() {
         //TODO remove last image from database if not same
         //save to database
         //save to user
     }
+
     override fun onClick(view: View?) {
-        when(view!!.id){
+        when (view!!.id) {
             R.id.user_imageview -> {
                 updateImage()
-                Toast.makeText(context, "Image Clicked", Toast.LENGTH_SHORT).show()
+                mCoordinatorLayout.showSnackbar("Image Clicked")
             }
         }
     }
+
+    private fun showError() {
+        try {
+
+        } catch (e: java.lang.NullPointerException) {
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.profile_menu, menu)
     }
 
-    private fun saveToDatabase(){
-        if (!updateUser()){
-            Toast.makeText(context, getString(R.string.unsuccessfully_saved), Toast.LENGTH_SHORT).show()
+    private fun saveToDatabase() {
+        if (!updateUser()) {
             return
         }
 
-        val updateMap:Map<String, Any?> = mutableMapOf(
+        val updateMap: Map<String, Any?> = mutableMapOf(
                 Pair(User.COLUMN_FIRST_NAME, mUser?.firstName),
                 Pair(User.COLUMN_LAST_NAME, mUser?.lastName),
                 Pair(User.COLUMN_IMAGE_URL, mUser?.imageUrl),
                 Pair(User.COLUMN_EMAIL, mUser?.email)
-                )
+        )
         mDatabaseRef.updateChildren(updateMap)
-        Toast.makeText(context, getString(R.string.successfully_saved), Toast.LENGTH_SHORT).show()
+        mCoordinatorLayout.showSnackbar(getString(R.string.successfully_saved))
 
         Log.d(TAG, "USER ID= " + mUser?.id)
 
     }
 
-    private fun validateUI():Boolean{
-        var valid = true
-        val email = mEmailEditTextInput.text.toString()
-        if (email.validateEmail()){
-            mEmailTextLayout.error = ""
 
-        } else{
-            mEmailTextLayout.error = getString(R.string.email_error)
+
+    private fun validateUI(): Boolean {
+        var valid = true
+        val email = mEmailEditText.text.toString()
+        if (!email.validateEmail()) {
+            mCoordinatorLayout.showSnackbar(getString(R.string.email_error))
             valid = false
         }
         Log.d(TAG, "validateUI=" + valid)
         return valid
     }
 
-    private fun updateUser():Boolean{
+    private fun updateUser(): Boolean {
         if (!validateUI()) return false
         Log.d(TAG, "BEFORE= " + mUser.toString())
-        mUser?.firstName = mFirstNameEditTextInput.text.toString()
-        mUser?.lastName = mLastNameEditTextInput.text.toString()
-        mUser?.email = mEmailEditTextInput.text.toString()
+        mUser?.firstName = mFirstNameEditText.text?.toString() ?: ""
+        mUser?.lastName = mLastNameEditText.text?.toString() ?: ""
+        mUser?.email = mEmailEditText.text?.toString() ?: ""
         Log.d(TAG, "AFTER= " + mUser.toString())
         return true
     }
@@ -159,10 +190,11 @@ class ProfileFragment:Fragment(), View.OnClickListener {
                 }
                 R.id.action_sign_out -> {
                     signOut()
-                    openAuthActivity(activity)
+                    activity.openAuthActivity()
                     true
                 }
                 android.R.id.home -> {
+                    activity.supportFinishAfterTransition()
                     activity.onBackPressed()
                     true
                 }
