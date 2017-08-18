@@ -21,12 +21,13 @@ import com.maheshgaya.android.basicnote.util.toDate
 /**
  * Created by Mahesh Gaya on 8/13/17.
  */
-class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.Adapter<NoteListAdapter.ViewHolder>(), View.OnClickListener {
+class NoteListAdapter(context: Context?, list:MutableList<Note>, main:Boolean = true): RecyclerView.Adapter<NoteListAdapter.ViewHolder>(), View.OnClickListener {
 
     /** mutable list of notes */
     private var mList = list
     /** context */
     private var mContext = context
+    private var mMain = main
 
 
     init {
@@ -71,6 +72,7 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>): RecyclerView.A
                 val intent = Intent(mContext as Activity, NoteActivity::class.java)
                 val position= view.tag as Int
                 intent.putExtra(NoteFragment.NOTE_KEY, mList[position])
+                intent.putExtra(NoteFragment.NOTE_MAIN, mMain)
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity, view,
                         mContext?.getString(R.string.item_note_transition))
                 mContext!!.startActivity(intent, options.toBundle())

@@ -2,6 +2,7 @@ package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.EditText
 import com.maheshgaya.android.basicnote.R
 
@@ -9,6 +10,9 @@ import com.maheshgaya.android.basicnote.R
  * Created by Mahesh Gaya on 8/14/17.
  */
 class NoteEditText : EditText {
+    companion object {
+        private val TAG = NoteEditText::class.simpleName
+    }
 
     /**
      * Listeners for NoteEditText

@@ -6,7 +6,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
-import android.text.Spannable
+import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -26,7 +26,7 @@ import com.maheshgaya.android.basicnote.widget.NoteEditorMenu
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class NoteFragment: Fragment(), NoteEditorMenu.Callback {
+class NoteFragment: Fragment(), NoteEditorMenu.Callback, NoteEditText.NoteEditTextListener {
 
     /** fragment toolbar */
     private lateinit var mToolbar: Toolbar
@@ -54,11 +54,13 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     private var mNote = Note()
 
     private var mHasEdited = false
+    private var mMainNote:Boolean = true
 
     companion object {
         //for logging purposes
         private val TAG = NoteFragment::class.simpleName
         val NOTE_KEY = "note_key"
+        val NOTE_MAIN = "note_main"
     }
 
     /**
@@ -91,15 +93,17 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
             }
 
         })
+
+        mBodyEditText.addListener(this)
         mTitleEditText.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(text: Editable?) {
                 mHasEdited = true
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
                 mHasEdited = true
             }
 
@@ -133,6 +137,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
     override fun onStart() {
         super.onStart()
         if (mBodyEditText.text.isEmpty())  mBodyEditText.requestFocus()
+        mCoordinatorLayout.showSnackbar("isMain=" + mMainNote)
     }
 
     /**
@@ -140,9 +145,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      */
     override fun onPause() {
         super.onPause()
-        if (mHasEdited) {
-            saveToDatabase()
-        }
+        if (mHasEdited) { saveToDatabase() }
     }
 
     /**
@@ -150,9 +153,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      * @param outState bundle to save
      */
     override fun onSaveInstanceState(outState: Bundle?) {
-        if (mHasEdited) {
-            saveToDatabase()
-        }
+        if (mHasEdited) { saveToDatabase() }
         outState?.putParcelable(NOTE_KEY, mNote)
 
         super.onSaveInstanceState(outState)
@@ -167,11 +168,13 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
         if (savedInstanceState != null && savedInstanceState.containsKey(NOTE_KEY)) {
             //for change in orientation
             mNote = savedInstanceState.getParcelable(NOTE_KEY)
+            mMainNote = savedInstanceState.getBoolean(NOTE_MAIN, true)
             mKey = if (!mNote.id.isNullOrEmpty()) mNote.id!! else ""
             updateUI()
         } else if (activity.intent != null && activity.intent.hasExtra(NOTE_KEY)){
             //from another activity
             mNote = activity.intent.getParcelableExtra<Note>(NOTE_KEY)
+            mMainNote = activity.intent.getBooleanExtra(NOTE_MAIN, true)
             mKey = mNote.id!!
             updateUI()
         }
@@ -203,6 +206,10 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
             R.id.action_share -> {
                 true
             }
+            R.id.action_save -> {
+                saveToDatabase()
+                true
+            }
             android.R.id.home -> {
                 activity.supportFinishAfterTransition()
                 activity.onBackPressed()
@@ -225,8 +232,8 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
             mCoordinatorLayout.showSnackbar(getString(R.string.empty_note_not_saved))
             return
         }
-        //notes/{uid}/main
-        val userRef = Note.getMainPath(mUser?.uid)
+        //notes/{uid}/main or notes/{uid}/trash
+        val userRef = if (mMainNote) Note.getMainPath(mUser?.uid) else Note.getTrashPath(mUser?.uid)
         //if key is empty, get a new key
         if (mKey.isEmpty()) {
             mKey = mDatabase.getReference(userRef).push().key
@@ -252,45 +259,50 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      * Handles Bold button clicks
      */
     override fun onBoldClick() {
-        //get start and end position
-        val positionStart = mBodyEditText.selectionStart
-        val positionEnd = mBodyEditText.selectionEnd
-        //get styles from spans
-        val spanStyles = mBodyEditText.text.getSpans(positionStart, positionEnd, StyleSpan::class.java)
-        if (spanStyles.isEmpty()){
-            //set bold
-            mBodyEditText.text.setSpan(StyleSpan(Typeface.BOLD), positionStart, positionEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        clearComposingText()
+        Log.d(TAG, "Bold=" + mBodyEditText.selectionStart.toString() + "\t" + mBodyEditText.selectionEnd)
+        val selStart = mBodyEditText.selectionStart
+        val selEnd = mBodyEditText.selectionEnd
+
+        val spanStyles = mBodyEditText.text.getSpans(selStart, selEnd, StyleSpan::class.java)
+
+        if (!mEditorMenu.getBoldCheckedButton().isChecked){
+            Log.d(TAG, "Bold=getBoldCheckedButton.notchecked")
+            Log.d(TAG, "Bold=" + spanStyles.isEmpty())
+
+            if (spanStyles.isEmpty()) {
+                mBodyEditText.text.setSpan(StyleSpan(Typeface.BOLD), selStart,
+                        selEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+            } else{
+                Log.d(TAG, "BOLD_ELSE=" + spanStyles.size)
+                spanStyles.forEach {
+                    mBodyEditText.setSelectedTextSpan(it, selStart, selEnd, Typeface.BOLD)
+                }
+
+            }
             mEditorMenu.getBoldCheckedButton().isChecked = true
         } else {
-            //remove bold
+            Log.d(TAG, "Bold=getBoldCheckedButton.ischecked")
+            Log.d(TAG, spanStyles.size.toString())
             spanStyles
                     .filter { it.style == Typeface.BOLD }
-                    .forEach { mBodyEditText.text.removeSpan(it) }
+                    .forEach {
+                        mBodyEditText.removeSelectedTextSpan(it, selStart, selEnd, Typeface.BOLD)
+                    }
             mEditorMenu.getBoldCheckedButton().isChecked = false
         }
+        Log.d(TAG, "BOLD=" + mBodyEditText.text.toHtml())
         mHasEdited = true
     }
+
+
+
 
     /**
      * Handles Italic button clicks
      */
     override fun onItalicClick() {
-        //get start and end position
-        val positionStart = mBodyEditText.selectionStart
-        val positionEnd = mBodyEditText.selectionEnd
-        //get styles from spans
-        val spanStyles = mBodyEditText.text.getSpans(positionStart, positionEnd, StyleSpan::class.java)
-        if (spanStyles.isEmpty()){
-            //set italic
-            mBodyEditText.text.setSpan(StyleSpan(Typeface.ITALIC), positionStart, positionEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-            mEditorMenu.getItalicCheckedButton().isChecked = true
-        } else {
-            //remove italic
-            spanStyles
-                    .filter { it.style == Typeface.ITALIC }
-                    .forEach { mBodyEditText.text.removeSpan(it) }
-            mEditorMenu.getItalicCheckedButton().isChecked = false
-        }
+
         mHasEdited = true
     }
 
@@ -298,23 +310,37 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback {
      * Handles Underline button clicks
      */
     override fun onUnderlineClick() {
-        //get start and end position
-        val positionStart = mBodyEditText.selectionStart
-        val positionEnd = mBodyEditText.selectionEnd
-        //get styles from spans
-        val spanStyles = mBodyEditText.text.getSpans(positionStart, positionEnd, UnderlineSpan::class.java)
-        if (spanStyles.isEmpty()){
-            //set underline
-            mBodyEditText.text.setSpan(UnderlineSpan(), positionStart, positionEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-            mEditorMenu.getUnderlineCheckedButton().isChecked = true
-        } else {
-            //remove underline
-            for (charStyle in spanStyles) {
-                mBodyEditText.text.removeSpan(charStyle)
-            }
-            mEditorMenu.getUnderlineCheckedButton().isChecked = false
-        }
+
         mHasEdited = true
+    }
+
+    override fun onSelectionChangedListener(selStart: Int, selEnd: Int) {
+        Log.d(TAG, "Selected=" + mBodyEditText.text.toHtml())
+        //Check for StyleSpan: Bold and Italic
+        val spanStyles = mBodyEditText.text.getSpans(selStart, selEnd, StyleSpan::class.java)
+        if (spanStyles.isEmpty()){
+            mEditorMenu.getBoldCheckedButton().isChecked = false
+            mEditorMenu.getItalicCheckedButton().isChecked = false
+        } else {
+            spanStyles.forEach {
+                if (it.style == Typeface.BOLD) {
+                    mEditorMenu.getBoldCheckedButton().isChecked = true
+                }
+                if (it.style == Typeface.ITALIC) {
+                    mEditorMenu.getItalicCheckedButton().isChecked = true
+                }
+            }
+        }
+
+        //Check for underline
+        val underlineStyles = mBodyEditText.text.getSpans(selStart, selEnd, UnderlineSpan::class.java)
+        if (underlineStyles.isEmpty()){
+            mEditorMenu.getUnderlineCheckedButton().isChecked = false
+        } else {
+            for (span in underlineStyles) {
+                mEditorMenu.getUnderlineCheckedButton().isChecked = span == UnderlineSpan()
+            }
+        }
     }
 
 }
