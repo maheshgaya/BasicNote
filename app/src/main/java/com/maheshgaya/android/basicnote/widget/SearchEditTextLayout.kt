@@ -247,7 +247,6 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
 
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
-
         val ss  = SavedState(superState)
         ss.isExpanded = mIsExpanded
         ss.hintText = hintText

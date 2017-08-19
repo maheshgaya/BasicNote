@@ -13,47 +13,49 @@ fun EditText.removeSelectedTextSpan(spanStyle: StyleSpan, selStart: Int, selEnd:
     val TAG = "EditText"
     val spanStart = text.getSpanStart(spanStyle)
     val spanEnd = text.getSpanEnd(spanStyle)
-    Log.d(TAG, ":removeSelectedTextSpan::SpanStart= $spanStart\tSpanEnd= $spanEnd")
+    Log.d(TAG, ":removeSelectedTextSpan::SpanStart= $spanStart\tSpanEnd= $spanEnd\tSelStart= $selStart\tSelEnd= $selEnd")
 
     //example: <b>Hello</b>
     if (selStart == spanStart && selEnd == spanEnd){
         Log.d(TAG, "first if")
         //<b>Hello</b>: selected=Hello
         text.removeSpan(spanStyle)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else if (selStart > spanStart && selEnd < spanEnd){
         Log.d(TAG, "second if")
         //<b>Hello</b>: selected=ell
         text.removeSpan(spanStyle)
         text.setSpan(StyleSpan(styleInt), spanStart, selStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(StyleSpan(styleInt), selEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else if (selStart == spanStart && selEnd < spanEnd){
         Log.d(TAG, "third if")
         //<b>Hello</b>: selected=Hell
         text.removeSpan(spanStyle)
-        text.setSpan(StyleSpan(styleInt), selEnd, spanEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(styleInt), selEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else if (selStart > spanStart && selEnd == spanEnd){
         Log.d(TAG, "fourth if")
         //<b>Hello</b>: selected=ello
         text.removeSpan(spanStyle)
-        text.setSpan(StyleSpan(styleInt), spanStart, selStart, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(styleInt), spanStart, selStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else if (selStart > spanStart && selEnd > spanEnd){
         Log.d(TAG, "fifth if")
         //<b>Hello</b>: selected=ello World
         text.removeSpan(spanStyle)
-        text.setSpan(StyleSpan(styleInt), spanStart, selStart, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(styleInt), spanStart, selStart, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else if (selStart < spanStart && selEnd < spanEnd){
         Log.d(TAG, "sixth if")
         //<b>Hello</b>: selected=Hey Hello
         text.removeSpan(spanStyle)
-        text.setSpan(StyleSpan(styleInt), selEnd, spanEnd,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(styleInt), selEnd, spanEnd,Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     } else {
         Log.d(TAG, "seventh:last if")
         text.removeSpan(spanStyle)
+        text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     }
 }
 

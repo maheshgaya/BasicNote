@@ -47,6 +47,7 @@ class SearchResultFragment : Fragment() {
     companion object {
         val TAG = SearchResultFragment::class.simpleName
     }
+
     init {
         setHasOptionsMenu(true)
     }
@@ -57,19 +58,11 @@ class SearchResultFragment : Fragment() {
         val notesQuery = databaseRef.orderByChild(Note.COLUMN_BODY).endAt(searchQuery)
         Log.d(TAG + ":mainSearch", mainSearch.toString())
         mNoteList.clear()
+        if (searchQuery.isEmpty()) setView()
         notesQuery.addChildEventListener(object : ChildEventListener{
-            override fun onCancelled(p0: DatabaseError?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
+            override fun onCancelled(databaseError: DatabaseError?) { setView() }
+            override fun onChildMoved(dataSnapshot: DataSnapshot?, p1: String?) { setView() }
+            override fun onChildChanged(dataSnapshot: DataSnapshot?, p1: String?) { setView() }
             override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
                 if (dataSnapshot!!.childrenCount == 0.toLong()) return
                 val note = dataSnapshot.getValue(Note::class.java)
@@ -80,17 +73,9 @@ class SearchResultFragment : Fragment() {
                     mNoteAdapter.notifyDataSetChanged()
                     setView()
                 }
-
-
             }
-
-            override fun onChildRemoved(p0: DataSnapshot?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
+            override fun onChildRemoved(databaseError: DataSnapshot?) { setView() }
         })
-
-
     }
 
     fun clearList(){
@@ -99,6 +84,7 @@ class SearchResultFragment : Fragment() {
 
     fun setView(){
         try {
+            Log.d(TAG, "SearchResults=" +  mNoteList.size)
             if (mNoteList.size == 0) {
                 mEmptyView.visibility = View.VISIBLE; mMainView.visibility = View.GONE
             } else {
@@ -109,8 +95,6 @@ class SearchResultFragment : Fragment() {
         }
 
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,12 +109,7 @@ class SearchResultFragment : Fragment() {
         mNoteAdapter = NoteListAdapter(context, mNoteList)
         mNoteRecyclerView.adapter = mNoteAdapter
         mNoteRecyclerView.layoutManager = LinearLayoutManager(context)
-        setView()
         return rootView
     }
-
-
-
-
 
 }

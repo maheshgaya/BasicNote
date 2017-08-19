@@ -63,6 +63,7 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
         override fun onCancelled(databaseError: DatabaseError) {
             // Getting Post failed, log a message
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            setView()
         }
     }
 
@@ -85,7 +86,6 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
         mMainView = rootView.bind(R.id.main_view)
         mEmptyView = rootView.bind(R.id.empty_view)
         mEmptyView.setCallback(this)
-        setView()
         return rootView
     }
 

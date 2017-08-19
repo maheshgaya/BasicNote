@@ -35,14 +35,12 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             .getReference(User.TABLE_NAME + "/" + mAuth.currentUser!!.uid)
 
     private val mDatabaseValueListener = object : ValueEventListener {
-        override fun onCancelled(error: DatabaseError?) {
-        }
+        override fun onCancelled(error: DatabaseError?) {}
 
         override fun onDataChange(snapshot: DataSnapshot?) {
             mUser = snapshot?.getValue(User::class.java)
             setupViews()
         }
-
     }
 
     private lateinit var mImageView: ImageView
@@ -51,7 +49,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var mEmailEditText: EditText
     private lateinit var mBackgroundImageView: ImageView
     private lateinit var mCoordinatorLayout: CoordinatorLayout
-
 
     init {
         setHasOptionsMenu(true)
@@ -128,14 +125,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun showError() {
-        try {
-
-        } catch (e: java.lang.NullPointerException) {
-            e.printStackTrace()
-        }
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.profile_menu, menu)
@@ -149,8 +138,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         val updateMap: Map<String, Any?> = mutableMapOf(
                 Pair(User.COLUMN_FIRST_NAME, mUser?.firstName),
                 Pair(User.COLUMN_LAST_NAME, mUser?.lastName),
-                Pair(User.COLUMN_IMAGE_URL, mUser?.imageUrl),
-                Pair(User.COLUMN_EMAIL, mUser?.email)
+                Pair(User.COLUMN_IMAGE_URL, mUser?.imageUrl)
         )
         mDatabaseRef.updateChildren(updateMap)
         mCoordinatorLayout.showSnackbar(getString(R.string.successfully_saved))
@@ -159,21 +147,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     }
 
-
-
-    private fun validateUI(): Boolean {
-        var valid = true
-        val email = mEmailEditText.text.toString()
-        if (!email.validateEmail()) {
-            mCoordinatorLayout.showSnackbar(getString(R.string.email_error))
-            valid = false
-        }
-        Log.d(TAG, "validateUI=" + valid)
-        return valid
-    }
-
     private fun updateUser(): Boolean {
-        if (!validateUI()) return false
         Log.d(TAG, "BEFORE= " + mUser.toString())
         mUser?.firstName = mFirstNameEditText.text?.toString() ?: ""
         mUser?.lastName = mLastNameEditText.text?.toString() ?: ""

@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
+import android.text.Spannable
 import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.StyleSpan
@@ -80,16 +81,13 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback, NoteEditText.NoteEditTe
         mBodyEditText.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(text: Editable?) {
                 mHasEdited = true
-                Log.d(TAG + ":afterTextChanged", mHasEdited.toString())
             }
 
             override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {
-                Log.d(TAG + ":beforeTextChanged", mHasEdited.toString())
             }
 
             override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
                 mHasEdited = true
-                Log.d(TAG + ":onTextChanged", mHasEdited.toString())
             }
 
         })
@@ -275,20 +273,30 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback, NoteEditText.NoteEditTe
                         selEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
             } else{
                 Log.d(TAG, "BOLD_ELSE=" + spanStyles.size)
-                spanStyles.forEach {
-                    mBodyEditText.setSelectedTextSpan(it, selStart, selEnd, Typeface.BOLD)
+                if (selStart != selEnd) {
+                    Log.d(TAG, "BOLD_ELSE:Not equal=" + spanStyles.size)
+                    spanStyles.forEach {
+                        mBodyEditText.setSelectedTextSpan(it, selStart, selEnd, Typeface.BOLD)
+                    }
+                } else {
+                    Log.d(TAG, "BOLD_ELSE:Equal=" + spanStyles.size)
+                    spanStyles.forEach {
+                        mBodyEditText.text.setSpan(StyleSpan(Typeface.NORMAL), selStart, selEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    }
                 }
 
             }
             mEditorMenu.getBoldCheckedButton().isChecked = true
         } else {
-            Log.d(TAG, "Bold=getBoldCheckedButton.ischecked")
+            Log.d(TAG, "Bold:isChecked=getBoldCheckedButton.ischecked")
             Log.d(TAG, spanStyles.size.toString())
             spanStyles
                     .filter { it.style == Typeface.BOLD }
                     .forEach {
+                        Log.d(TAG, "BOLD:isChecked:remove=" + spanStyles.size)
                         mBodyEditText.removeSelectedTextSpan(it, selStart, selEnd, Typeface.BOLD)
                     }
+
             mEditorMenu.getBoldCheckedButton().isChecked = false
         }
         Log.d(TAG, "BOLD=" + mBodyEditText.text.toHtml())
@@ -318,6 +326,7 @@ class NoteFragment: Fragment(), NoteEditorMenu.Callback, NoteEditText.NoteEditTe
         Log.d(TAG, "Selected=" + mBodyEditText.text.toHtml())
         //Check for StyleSpan: Bold and Italic
         val spanStyles = mBodyEditText.text.getSpans(selStart, selEnd, StyleSpan::class.java)
+        Log.d(TAG, "Selected:isEmpty=" + spanStyles.size)
         if (spanStyles.isEmpty()){
             mEditorMenu.getBoldCheckedButton().isChecked = false
             mEditorMenu.getItalicCheckedButton().isChecked = false
