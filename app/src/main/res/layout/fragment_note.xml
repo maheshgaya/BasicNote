@@ -49,7 +49,7 @@
                 android:gravity="top"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:hint="@string/hint_note_body"
-                android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+                android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                 android:linksClickable="true"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"

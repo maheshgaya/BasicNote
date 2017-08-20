@@ -1,10 +1,16 @@
 package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Editable
+import android.text.Spannable
+import android.text.TextWatcher
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.EditText
 import com.maheshgaya.android.basicnote.R
+import com.maheshgaya.android.basicnote.util.toHtml
 
 /**
  * Created by Mahesh Gaya on 8/14/17.
@@ -14,28 +20,15 @@ class NoteEditText : EditText {
         private val TAG = NoteEditText::class.simpleName
     }
 
-    /**
-     * Listeners for NoteEditText
-     */
-    interface NoteEditTextListener{
-        /**
-         * Listens for selected text
-         * @param selStart Beginning of the selected text
-         * @param selEnd Ending of the selected text
-         */
-        fun onSelectionChangedListener(selStart: Int, selEnd: Int)
+    interface ButtonCallback{
+        fun setButtonState(bold: Boolean, italic:Boolean, underline:Boolean)
     }
 
-    private var mListener: NoteEditTextListener? = null
+    private var mCallback:ButtonCallback? = null
 
-    /**
-     * Adds listener to the EditText
-     * @param listener Add listener to NoteEditText
-     */
-    fun addListener(listener: NoteEditTextListener){
-        mListener = listener
+    fun addCallback(callback:ButtonCallback){
+        mCallback = callback
     }
-
     /**
      * Invoke constructor
      */
@@ -63,6 +56,7 @@ class NoteEditText : EditText {
         //TODO attributes, check res/values/attrs.xml for NoteEditText attributes
 
         a.recycle()
+        addTextChangedListener(NoteTextWatcher())
     }
 
 
@@ -73,6 +67,41 @@ class NoteEditText : EditText {
      */
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
-        mListener?.onSelectionChangedListener(selStart, selEnd)
+        mCallback?.setButtonState(false, false, false)
+        val html = text.toHtml()
+        Log.d(TAG, "onSelectionChanged=\n$html\nselStart=$selStart\tselEnd=$selEnd" )
+    }
+
+    private fun handleUnderlineStyle(selStart: Int, selEnd: Int){
+
+    }
+
+    private fun handleSpannableStyle(selStart: Int, selEnd: Int, type:Int){
+
+    }
+
+    fun styleBold(){
+        handleSpannableStyle(selectionStart, selectionEnd, Typeface.BOLD)
+    }
+
+
+    fun styleItalic() {
+        handleSpannableStyle(selectionStart, selectionEnd, Typeface.ITALIC)
+    }
+
+    fun styleUnderline() {
+        handleUnderlineStyle(selectionStart, selectionEnd)
+    }
+
+    inner class NoteTextWatcher:TextWatcher{
+        override fun afterTextChanged(editable: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        }
+
     }
 }
