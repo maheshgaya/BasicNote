@@ -1,6 +1,5 @@
 package com.maheshgaya.android.basicnote.ui.main
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
@@ -131,7 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (view!!.id) {
             R.id.fab_main -> {
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view,
-                        getString(R.string.item_note_transition))
+                        getString(R.string.transition_item_note))
                 startActivity(Intent(this@MainActivity, NoteActivity::class.java), options.toBundle())
             }
         }

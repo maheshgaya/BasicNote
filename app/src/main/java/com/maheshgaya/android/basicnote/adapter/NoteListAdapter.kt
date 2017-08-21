@@ -74,7 +74,7 @@ class NoteListAdapter(context: Context?, list:MutableList<Note>, main:Boolean = 
                 intent.putExtra(NoteFragment.NOTE_KEY, mList[position])
                 intent.putExtra(NoteFragment.NOTE_MAIN, mMain)
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity, view,
-                        mContext?.getString(R.string.item_note_transition))
+                        mContext?.getString(R.string.transition_item_note))
                 mContext!!.startActivity(intent, options.toBundle())
 
             }
