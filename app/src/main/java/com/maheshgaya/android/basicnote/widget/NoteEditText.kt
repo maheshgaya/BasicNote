@@ -3,9 +3,7 @@ package com.maheshgaya.android.basicnote.widget
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Editable
-import android.text.Spannable
 import android.text.TextWatcher
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.EditText
@@ -15,18 +13,25 @@ import com.maheshgaya.android.basicnote.util.toHtml
 /**
  * Created by Mahesh Gaya on 8/14/17.
  */
-class NoteEditText : EditText {
+class NoteEditText : EditText, NoteEditorMenu.Callback {
+
     companion object {
         private val TAG = NoteEditText::class.simpleName
     }
 
-    interface ButtonCallback{
-        fun setButtonState(bold: Boolean, italic:Boolean, underline:Boolean)
+    interface HasEditedCallback {
+        fun setEditedState(value:Boolean)
     }
 
-    private var mCallback:ButtonCallback? = null
+    private var mCallback: HasEditedCallback? = null
+    private var mNoteMenu: NoteEditorMenu? = null
 
-    fun addCallback(callback:ButtonCallback){
+    fun addNoteMenu(noteMenu: NoteEditorMenu){
+        mNoteMenu = noteMenu
+        mNoteMenu?.setCallback(this)
+    }
+
+    fun addCallback(callback: HasEditedCallback){
         mCallback = callback
     }
     /**
@@ -67,7 +72,6 @@ class NoteEditText : EditText {
      */
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
-        mCallback?.setButtonState(false, false, false)
         val html = text.toHtml()
         Log.d(TAG, "onSelectionChanged=\n$html\nselStart=$selStart\tselEnd=$selEnd" )
     }
@@ -91,6 +95,23 @@ class NoteEditText : EditText {
 
     fun styleUnderline() {
         handleUnderlineStyle(selectionStart, selectionEnd)
+    }
+
+
+
+    override fun onBoldClick() {
+        mCallback?.setEditedState(true)
+        styleBold()
+    }
+
+    override fun onItalicClick() {
+        mCallback?.setEditedState(true)
+        styleItalic()
+    }
+
+    override fun onUnderlineClick() {
+        mCallback?.setEditedState(true)
+        styleUnderline()
     }
 
     inner class NoteTextWatcher:TextWatcher{

@@ -2,9 +2,12 @@ package com.maheshgaya.android.basicnote.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.maheshgaya.android.basicnote.R
+import android.view.ViewGroup
+
 
 /**
  * Created by Mahesh Gaya on 8/13/17.
@@ -15,11 +18,12 @@ class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(cont
     /** The outer layout */
     private var mMenuLayout: View
     /** The bold checked button */
-    private var mBoldCheckedButton: CheckedButton
+    var boldCheckedButton: CheckedButton
     /** The italic checked button */
-    private var mItalicCheckedButton: CheckedButton
+    var italicCheckedButton: CheckedButton
     /** The underline checked button */
-    private var mUnderlineCheckedButton: CheckedButton
+    var underlineCheckedButton: CheckedButton
+    private var mMainLayout: FrameLayout
 
     /** Callback for bold, italic, and underline button */
     interface Callback {
@@ -29,21 +33,6 @@ class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(cont
     }
 
     /**
-     * @return Instance of bold button
-     */
-    fun getBoldCheckedButton(): CheckedButton = mBoldCheckedButton
-
-    /**
-     * @return Instance of Italic button
-     */
-    fun getItalicCheckedButton(): CheckedButton = mItalicCheckedButton
-
-    /**
-     * @return Instance of Underline button
-     */
-    fun getUnderlineCheckedButton(): CheckedButton = mUnderlineCheckedButton
-
-    /**
      * This is the default constructor
      * Inflate and initialize the views
      * Add click listener to the buttons
@@ -51,13 +40,18 @@ class NoteEditorMenu(context: Context?, attrs: AttributeSet?) : FrameLayout(cont
     init {
         View.inflate(context, R.layout.layout_note_editor_menu, this)
         mMenuLayout = findViewById(R.id.note_editor_menu_layout)
-        mBoldCheckedButton = findViewById(R.id.format_bold_imagebutton)
-        mItalicCheckedButton = findViewById(R.id.format_italic_imagebutton)
-        mUnderlineCheckedButton = findViewById(R.id.format_underline_imagebutton)
+        mMainLayout = findViewById(R.id.note_editor_menu_framelayout)
+        boldCheckedButton = findViewById(R.id.format_bold_imagebutton)
+        italicCheckedButton = findViewById(R.id.format_italic_imagebutton)
+        underlineCheckedButton = findViewById(R.id.format_underline_imagebutton)
 
-        mBoldCheckedButton.setOnClickListener(this)
-        mItalicCheckedButton.setOnClickListener(this)
-        mUnderlineCheckedButton.setOnClickListener(this)
+        boldCheckedButton.setOnClickListener(this)
+        italicCheckedButton.setOnClickListener(this)
+        underlineCheckedButton.setOnClickListener(this)
+        val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.gravity = Gravity.BOTTOM
+        mMainLayout.layoutParams = params
     }
 
     /** Interface listener */

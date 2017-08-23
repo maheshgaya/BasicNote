@@ -1,18 +1,14 @@
 package com.maheshgaya.android.basicnote.ui.note
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
-import android.text.Spannable
 import android.text.TextWatcher
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -26,7 +22,7 @@ import com.maheshgaya.android.basicnote.widget.NoteEditorMenu
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCallback {
+class NoteFragment : Fragment(), NoteEditText.HasEditedCallback {
 
     /** fragment toolbar */
     private lateinit var mToolbar: Toolbar
@@ -34,11 +30,10 @@ class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCal
     private lateinit var mTitleEditText: EditText
     /** body for note */
     private lateinit var mBodyEditText: NoteEditText
-    /** editor menu */
-    private lateinit var mEditorMenu: NoteEditorMenu
     /** last edited textview */
     private lateinit var mLastEditedTextView: TextView
 
+    private lateinit var mEditorMenu:NoteEditorMenu
     private lateinit var mCoordinatorLayout: CoordinatorLayout
 
     //Firebase variables
@@ -112,11 +107,17 @@ class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCal
 
         //find editor menu and set callback
         mEditorMenu = activity.findViewById(R.id.note_editor_menu)
-        mEditorMenu.setCallback(this)
+        mBodyEditText.addNoteMenu(mEditorMenu)
         mLastEditedTextView = activity.findViewById(R.id.last_edited_textview)
         mCoordinatorLayout = activity.findViewById(R.id.coordinator)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -128,8 +129,7 @@ class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCal
      */
     override fun onPause() {
         super.onPause()
-        if (mHasEdited || mNote.body != mBodyEditText.text.toString() ||
-                mNote.title != mTitleEditText.text.toString()) {
+        if (mHasEdited) {
             saveToDatabase()
         }
     }
@@ -141,7 +141,6 @@ class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCal
     override fun onSaveInstanceState(outState: Bundle?) {
         if (mHasEdited) { saveToDatabase() }
         outState?.putParcelable(NOTE_KEY, mNote)
-
         super.onSaveInstanceState(outState)
 
     }
@@ -234,38 +233,8 @@ class NoteFragment : Fragment(), NoteEditorMenu.Callback, NoteEditText.ButtonCal
         mTitleEditText.clearComposingText()
     }
 
-    /**
-     * Handles Bold button clicks
-     */
-    override fun onBoldClick() {
-        mBodyEditText.styleBold()
-        mEditorMenu.getBoldCheckedButton().isChecked = !mEditorMenu.getBoldCheckedButton().isChecked
-        mHasEdited = true
-    }
-
-
-    /**
-     * Handles Italic button clicks
-     */
-    override fun onItalicClick() {
-        mBodyEditText.styleItalic()
-        mEditorMenu.getItalicCheckedButton().isChecked = !mEditorMenu.getItalicCheckedButton().isChecked
-        mHasEdited = true
-    }
-
-    /**
-     * Handles Underline button clicks
-     */
-    override fun onUnderlineClick() {
-        mBodyEditText.styleUnderline()
-        mEditorMenu.getUnderlineCheckedButton().isChecked = !mEditorMenu.getUnderlineCheckedButton().isChecked
-        mHasEdited = true
-    }
-
-    override fun setButtonState(bold: Boolean, italic: Boolean, underline: Boolean) {
-        mEditorMenu.getBoldCheckedButton().isChecked = bold
-        mEditorMenu.getItalicCheckedButton().isChecked = italic
-        mEditorMenu.getUnderlineCheckedButton().isChecked = underline
+    override fun setEditedState(value:Boolean) {
+        mHasEdited = value
     }
 
 

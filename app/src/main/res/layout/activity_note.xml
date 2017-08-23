@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -22,16 +22,18 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="?android:attr/actionBarSize"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:elevation="2dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:elevation="2dp">
 
             <TextView
                 android:id="@+id/last_edited_textview"
@@ -52,17 +54,10 @@
             android:layout_marginBottom="50dp" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:elevation="4dp"
+    <com.maheshgaya.android.basicnote.widget.NoteEditorMenu
+        android:id="@+id/note_editor_menu"
         android:layout_height="50dp"
-        android:layout_gravity="bottom">
-
-        <com.maheshgaya.android.basicnote.widget.NoteEditorMenu
-            android:id="@+id/note_editor_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
+        android:layout_gravity="bottom"
+        android:elevation="4dp"
+        android:layout_width="match_parent" />
 </android.support.design.widget.CoordinatorLayout>
