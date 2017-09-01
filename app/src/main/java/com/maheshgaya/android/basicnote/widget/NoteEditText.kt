@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.TextWatcher
 import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.EditText
@@ -67,6 +68,7 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
     }
 
 
+
     /**
      * Listens for selected text and sets callback
      * @param selStart Beginning of the selected text
@@ -79,12 +81,43 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
     }
 
     private fun handleUnderlineStyle(selStart: Int, selEnd: Int){
+        var exist = false
+        val styleSpans = text.getSpans(selStart, selEnd, UnderlineSpan::class.java)
+        var styleStart = -1
+        var styleEnd = -1
+        for (span in styleSpans){
+            if (span is UnderlineSpan){
+                if (text.getSpanStart(span) < selStart){
+                    styleStart = text.getSpanStart(span)
+                }
+                if (text.getSpanEnd(span) > selEnd){
+                    styleEnd = text.getSpanEnd(span)
+                }
+                text.removeSpan(span)
+                exist = true
+            }
+        }
+
+        if (styleStart > -1){
+            text.setSpan(UnderlineSpan(), styleStart, selStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        if (styleEnd> -1){
+            text.setSpan(UnderlineSpan(), selEnd, styleEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        if (!exist){
+            text.setSpan(UnderlineSpan(), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        } else {
+            mNoteMenu?.underlineCheckedButton?.isChecked = true
+        }
+        this.setSelection(selStart, selEnd)
 
     }
 
     private fun handleSpannableStyle(selStart: Int, selEnd: Int, type:Int){
         var exist = false
-        var styleSpans = text.getSpans(selStart, selEnd, StyleSpan::class.java)
+        val styleSpans = text.getSpans(selStart, selEnd, StyleSpan::class.java)
         var styleStart = -1
         var styleEnd = -1
         for (span in styleSpans){
@@ -120,6 +153,7 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
                 }
             }
         }
+        this.setSelection(selStart, selEnd)
 
 
 
