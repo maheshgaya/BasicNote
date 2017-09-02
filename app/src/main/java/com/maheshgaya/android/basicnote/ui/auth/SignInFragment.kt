@@ -101,6 +101,7 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
             valid = false
             required
         } else { null }
+
         mPasswordTextInputLayout.error = if (mPasswordTextEditText.text.isNullOrBlank()){
             valid = false
             required
@@ -120,7 +121,6 @@ class SignInFragment: Fragment(), View.OnClickListener, IAuth.SignIn {
                 .addOnCompleteListener(activity){ task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success")
                         val user = mFirebaseAuth.currentUser
                         updateUI(user)
                     } else {

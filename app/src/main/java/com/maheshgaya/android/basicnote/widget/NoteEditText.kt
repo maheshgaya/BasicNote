@@ -79,7 +79,6 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
         clearComposingText()
-        Log.d(TAG, "onSelectionChanged: selStart=$selStart\tselEnd=$selEnd")
         var bold = false
         var italic = false
         var underline = false
@@ -211,17 +210,14 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
     inner class NoteTextWatcher:TextWatcher{
         override fun afterTextChanged(editable: Editable?) {
             clearComposingText()
-            Log.d(TAG, "afterTextChanged= " + editable?.toHtml())
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             clearComposingText()
-            Log.d(TAG, "beforeTextChanged= $s"  )
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             clearComposingText()
-            Log.d(TAG, "onTextChanged= $s")
         }
 
     }

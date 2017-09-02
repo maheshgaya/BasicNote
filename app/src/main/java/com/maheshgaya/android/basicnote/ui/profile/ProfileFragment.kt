@@ -17,7 +17,6 @@ import com.maheshgaya.android.basicnote.model.User
 import com.maheshgaya.android.basicnote.util.openAuthActivity
 import com.maheshgaya.android.basicnote.util.showSnackbar
 import com.maheshgaya.android.basicnote.util.signOut
-import com.maheshgaya.android.basicnote.util.validateEmail
 import com.squareup.picasso.Picasso
 
 /**
@@ -142,17 +141,12 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         )
         mDatabaseRef.updateChildren(updateMap)
         mCoordinatorLayout.showSnackbar(getString(R.string.successfully_saved))
-
-        Log.d(TAG, "USER ID= " + mUser?.id)
-
     }
 
     private fun updateUser(): Boolean {
-        Log.d(TAG, "BEFORE= " + mUser.toString())
         mUser?.firstName = mFirstNameEditText.text?.toString() ?: ""
         mUser?.lastName = mLastNameEditText.text?.toString() ?: ""
         mUser?.email = mEmailEditText.text?.toString() ?: ""
-        Log.d(TAG, "AFTER= " + mUser.toString())
         return true
     }
 

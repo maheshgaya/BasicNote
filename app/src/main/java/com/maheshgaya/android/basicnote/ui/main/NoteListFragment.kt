@@ -97,23 +97,4 @@ class NoteListFragment : Fragment(), EmptyView.Callback {
     override fun onEmptyButtonClick() {
         startActivity(Intent(activity, NoteActivity::class.java))
     }
-
-//    inner class Callback() : ActionMode.Callback{
-//        override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//        }
-//
-//        override fun onCreateActionMode(mode: ActionMode?, menuItem: Menu?): Boolean {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//        }
-//
-//        override fun onPrepareActionMode(mode: ActionMode?, menuItem: Menu?): Boolean {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//        }
-//
-//        override fun onDestroyActionMode(mode: ActionMode?) {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//        }
-//
-//    }
 }

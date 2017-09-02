@@ -88,9 +88,7 @@ class CheckedButton : AppCompatImageView, Checkable {
     /**
      * @return The button name
      */
-    override fun getAccessibilityClassName(): CharSequence {
-        return CheckedButton::class.java.name
-    }
+    override fun getAccessibilityClassName(): CharSequence = CheckedButton::class.java.name
 
 }
 

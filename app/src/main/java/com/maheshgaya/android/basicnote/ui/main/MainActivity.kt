@@ -108,7 +108,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showSearchFragment(value)
         mSearchResultFragment.mainSearch =
                 mFragment !is TrashFragment
-        Log.d(TAG, "mainSearch=" + mSearchResultFragment.mainSearch.toString())
     }
 
 
@@ -186,7 +185,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onMenuButtonClicked() {
-        Log.d(TAG, "onMenuButtonClicked")
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START)
         } else {
@@ -211,7 +209,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onVoiceSearchClicked() {
-        Log.d(TAG, "onVoiceSearchClicked")
         try {
             startActivityForResult(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH),
                     ACTIVITY_REQUEST_CODE_VOICE_SEARCH)
@@ -236,16 +233,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun showSearchFragment(value: Boolean) {
         if (supportFragmentManager.isDestroyed) return
         if (value) {
-
-            Log.d(TAG, "Search attached")
             supportFragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.framelayout_main, mSearchResultFragment, SEARCH_FRAG_ID).commit()
 
             mSearchResultFragment.clearList()
         } else {
-
-            Log.d(TAG, "main replaced")
             supportFragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .replace(R.id.framelayout_main, mFragment, FRAG_ID).commit()

@@ -25,8 +25,8 @@ class SearchEditTextLayout(context: Context?, attrs: AttributeSet?) : FrameLayou
         /** Tag for logging purposes */
         private val TAG = SearchEditTextLayout::class.simpleName
         //for parcelables
-        private val EXPANDED_VIEW_ID = "expanded_view"
-        private val HINT_TEXT = "hint_text"
+        private const val EXPANDED_VIEW_ID = "expanded_view"
+        private const val HINT_TEXT = "hint_text"
     }
     /** Collapsed outer layout */
     private lateinit var mCollapsedSearchBoxView: View

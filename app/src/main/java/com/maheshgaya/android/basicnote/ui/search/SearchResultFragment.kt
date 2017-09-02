@@ -56,7 +56,6 @@ class SearchResultFragment : Fragment() {
         val databaseRef = FirebaseDatabase.getInstance()
                 .getReference( if (!mainSearch) Note.getTrashPath(mUser?.uid) else Note.getMainPath(mUser?.uid))
         val notesQuery = databaseRef.orderByChild(Note.COLUMN_BODY).endAt(searchQuery)
-        Log.d(TAG + ":mainSearch", mainSearch.toString())
         mNoteList.clear()
         if (searchQuery.isEmpty()) setView()
         notesQuery.addChildEventListener(object : ChildEventListener{
@@ -84,7 +83,6 @@ class SearchResultFragment : Fragment() {
 
     fun setView(){
         try {
-            Log.d(TAG, "SearchResults=" +  mNoteList.size)
             if (mNoteList.size == 0) {
                 mEmptyView.visibility = View.VISIBLE; mMainView.visibility = View.GONE
             } else {
