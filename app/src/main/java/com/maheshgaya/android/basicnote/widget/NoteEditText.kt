@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.text.Editable
 import android.text.Spannable
 import android.text.TextWatcher
+import android.text.style.CharacterStyle
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
@@ -12,6 +13,7 @@ import android.util.Log
 import android.widget.EditText
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.util.toHtml
+import java.lang.reflect.Type
 
 /**
  * Created by Mahesh Gaya on 8/14/17.
@@ -76,8 +78,36 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
      */
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
-        val html = text.toHtml()
-        Log.d(TAG, "onSelectionChanged=\n$html selStart=$selStart\tselEnd=$selEnd" )
+        Log.d(TAG, "onSelectionChanged: selStart=$selStart\tselEnd=$selEnd")
+        var bold = false
+        var italic = false
+        var underline = false
+
+        val spanArray = when {
+            selStart > 0 && selStart == selEnd -> text.getSpans(selStart - 1, selEnd, CharacterStyle::class.java)
+            text.isNotEmpty() -> text.getSpans(selStart, selEnd, CharacterStyle::class.java)
+            else -> emptyArray()
+        }
+
+        spanArray
+                .forEach {
+                    when (it) {
+                        is UnderlineSpan -> underline = true
+                        is StyleSpan -> when {
+                            it.style == Typeface.BOLD -> bold = true
+                            it.style == Typeface.ITALIC -> italic = true
+                            it.style == Typeface.BOLD_ITALIC -> {
+                                italic = true
+                                bold = true
+                            }
+                        }
+                    }
+                }
+        
+        mNoteMenu?.boldCheckedButton?.isChecked = bold
+        mNoteMenu?.italicCheckedButton?.isChecked = italic
+        mNoteMenu?.underlineCheckedButton?.isChecked = underline
+
     }
 
     private fun handleUnderlineStyle(selStart: Int, selEnd: Int){
@@ -109,7 +139,7 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
         if (!exist){
             text.setSpan(UnderlineSpan(), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         } else {
-            mNoteMenu?.underlineCheckedButton?.isChecked = true
+            mNoteMenu?.underlineCheckedButton?.isChecked = false
         }
         this.setSelection(selStart, selEnd)
 
