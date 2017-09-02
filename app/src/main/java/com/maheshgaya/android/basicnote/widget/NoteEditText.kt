@@ -103,7 +103,7 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
                         }
                     }
                 }
-        
+
         mNoteMenu?.boldCheckedButton?.isChecked = bold
         mNoteMenu?.italicCheckedButton?.isChecked = italic
         mNoteMenu?.underlineCheckedButton?.isChecked = underline
@@ -136,10 +136,12 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
             text.setSpan(UnderlineSpan(), selEnd, styleEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        if (!exist){
-            text.setSpan(UnderlineSpan(), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        } else {
-            mNoteMenu?.underlineCheckedButton?.isChecked = false
+        mNoteMenu?.underlineCheckedButton?.isChecked = when {
+            !exist -> {
+                text.setSpan(UnderlineSpan(), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                true
+            }
+            else -> false
         }
         this.setSelection(selStart, selEnd)
 
@@ -173,50 +175,36 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
 
         if (!exist){
             text.setSpan(StyleSpan(type), selStart, selEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        } else {
-            when (type){
-                Typeface.BOLD -> {
-                    mNoteMenu?.boldCheckedButton?.isChecked = false
-                }
-                Typeface.ITALIC -> {
-                    mNoteMenu?.italicCheckedButton?.isChecked = false
-                }
+        }
+
+        when (type){
+            Typeface.BOLD -> {
+                mNoteMenu?.boldCheckedButton?.isChecked = !exist
+            }
+            Typeface.ITALIC -> {
+                mNoteMenu?.italicCheckedButton?.isChecked = !exist
             }
         }
+
         this.setSelection(selStart, selEnd)
-
-
-
     }
 
-    fun styleBold(){
-        handleSpannableStyle(selectionStart, selectionEnd, Typeface.BOLD)
-    }
-
-
-    fun styleItalic() {
-        handleSpannableStyle(selectionStart, selectionEnd, Typeface.ITALIC)
-    }
-
-    fun styleUnderline() {
-        handleUnderlineStyle(selectionStart, selectionEnd)
-    }
 
 
 
     override fun onBoldClick() {
         mCallback?.setEditedState(true)
-        styleBold()
+        handleSpannableStyle(selectionStart, selectionEnd, Typeface.BOLD)
     }
 
     override fun onItalicClick() {
         mCallback?.setEditedState(true)
-        styleItalic()
+        handleSpannableStyle(selectionStart, selectionEnd, Typeface.ITALIC)
     }
 
     override fun onUnderlineClick() {
         mCallback?.setEditedState(true)
-        styleUnderline()
+        handleUnderlineStyle(selectionStart, selectionEnd)
     }
 
     inner class NoteTextWatcher:TextWatcher{
