@@ -78,6 +78,7 @@ class NoteEditText : EditText, NoteEditorMenu.Callback {
      */
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
+        clearComposingText()
         Log.d(TAG, "onSelectionChanged: selStart=$selStart\tselEnd=$selEnd")
         var bold = false
         var italic = false
