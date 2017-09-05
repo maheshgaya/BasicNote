@@ -3,13 +3,14 @@ package com.maheshgaya.android.basicnote.ui.profile
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import com.maheshgaya.android.basicnote.BaseActivitiy
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.util.bind
 
 /**
  * Created by Mahesh Gaya on 8/12/17.
  */
-class ProfileActivity: AppCompatActivity() {
+class ProfileActivity: BaseActivitiy() {
     private lateinit var mToolbar:Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

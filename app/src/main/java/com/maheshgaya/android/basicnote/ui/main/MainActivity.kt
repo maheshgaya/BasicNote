@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.maheshgaya.android.basicnote.BaseActivitiy
 import com.maheshgaya.android.basicnote.Constants
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.model.User
@@ -37,7 +38,7 @@ import com.maheshgaya.android.basicnote.widget.SearchEditTextLayout
 import com.squareup.picasso.Picasso
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : BaseActivitiy(), NavigationView.OnNavigationItemSelectedListener,
         SearchEditTextLayout.Callback, View.OnClickListener {
 
     private lateinit var mDrawer: DrawerLayout

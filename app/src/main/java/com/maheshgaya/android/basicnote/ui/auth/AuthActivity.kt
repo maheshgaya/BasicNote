@@ -4,13 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import com.maheshgaya.android.basicnote.BaseActivitiy
 import com.maheshgaya.android.basicnote.R
 import com.maheshgaya.android.basicnote.ui.main.MainActivity
 
 /**
  * Created by Mahesh Gaya on 8/11/17.
  */
-class AuthActivity : AppCompatActivity(){
+class AuthActivity : BaseActivitiy(){
     companion object {
         private val TAG = AuthActivity::class.simpleName
         val FRAG_ID = "fragment_auth"

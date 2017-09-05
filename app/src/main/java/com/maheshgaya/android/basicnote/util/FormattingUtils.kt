@@ -51,18 +51,18 @@ fun String.toCamelCase(): String {
 fun Long.toLastedEditedDate(context: Context): String = String.format(context.getString(R.string.last_edited) + " %s", this.time(context))
 
 private fun Long.time(context: Context): String {
-    val df = SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault())
+    val df = SimpleDateFormat("EEE, MMM d, yyyy hh:mma", Locale.getDefault())
     val fullFormat = df.format(this)
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
-    val dayFormat = SimpleDateFormat("EEE HH:mm", Locale.getDefault()).format(this)
+    val timeFormat = SimpleDateFormat(" hh:mma", Locale.getDefault()).format(this)
+    val dayFormat = SimpleDateFormat("EEE hh:mma", Locale.getDefault()).format(this)
 
     val today = Calendar.getInstance()
     val time: String
     time = when {
         today.get(Calendar.DAY_OF_YEAR) == df.calendar.get(Calendar.DAY_OF_YEAR) ->
-            context.getString(R.string.today) + " " + timeFormat
+            context.getString(R.string.today) + timeFormat
         today.get(Calendar.DAY_OF_YEAR) - 1 == df.calendar.get(Calendar.DAY_OF_YEAR) ->
-            context.getString(R.string.yesterday) + " " + timeFormat
+            context.getString(R.string.yesterday) + timeFormat
         today.get(Calendar.DAY_OF_YEAR) - 7 <= df.calendar.get(Calendar.DAY_OF_YEAR) ->
             dayFormat
         else -> fullFormat
